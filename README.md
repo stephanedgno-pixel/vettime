@@ -19,7 +19,7 @@ VetTime s'adresse aux petites et moyennes cliniques vétérinaires, et plus pré
 Deux situations réelles :
 
 - Dans une clinique, le suivi des présences se fait **encore sur papier**. Les feuilles se perdent, les erreurs de saisie sont fréquentes et corriger un poinçon prend du temps.
-- Dans une autre, on utilise **Agendrix**, un outil externe qui répond en partie au besoin, mais à un coût récurrent et sans lien direct avec les rapports internes.
+- Dans une autre, on utilise **Agendrix**, un outil externe, mais il est trop cher à implanter pour une petite clinique de 10 employés et moins.
 
 Dans les deux cas, les données sont **fragmentées, peu fiables et difficiles à consolider**. Calculer les heures travaillées, les retards ou les heures supplémentaires devient une tâche manuelle sujette aux erreurs.
 
@@ -37,6 +37,8 @@ Le tout est **accessible en ligne, sans installation**, et les correcteurs du co
 ### Pourquoi maintenant
 
 Le besoin est réel et observé sur le terrain. Une solution légère, adaptée aux petites cliniques et moins coûteuse qu'un abonnement générique, comble un vide concret — tout en servant de terrain d'apprentissage pour les notions de génie logiciel du cours (authentification, base de données, déploiement, observabilité).
+
+Le concept a déjà été validé auprès des propriétaires vétérinaires des cliniques visées, qui appuient le projet et confirment le besoin sur le terrain.
 
 ## Contexte
 
