@@ -89,6 +89,22 @@ l'apprentissage des outils de génie logiciel.
   attraper ça. Vérifier localement (`uv run pytest`) avant de pousser évite
   un cycle rouge inutile.
 
+### 10. pytest absent en CI (extra optionnel non installé)
+
+- **Symptôme** : la CI échoue sur `uv run pytest` avec
+  « Failed to spawn: pytest / No such file or directory » (exit 2).
+- **Cause** : `pytest` était déclaré dans `[project.optional-dependencies]`
+  (extra `dev`). Or, `uv sync` n'installe PAS les extras optionnels par
+  défaut — seul `uv sync --extra dev` les installe. Donc pytest manquait
+  dans le venv CI.
+- **Solution** : changer `uv sync` pour `uv sync --extra dev` dans le
+  `ci.yml` → pytest est installé, `uv run pytest` passe.
+- **Leçon** : distinction entre dépendances principales et extras
+  optionnels. `uv sync` seul n'installe pas les extras ; pour les dev
+  deps, soit `--extra dev`, soit les déclarer dans `[dependency-groups]`
+  (uv les installe par défaut). Bien déclarer les dépendances de test
+  est au cœur de la gestion des dépendances (module 2).
+
 ## Bilan
 
 Ces frictions sont typiques de la phase d'amorçage d'un projet. Aucune n'est
