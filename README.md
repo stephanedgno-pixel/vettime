@@ -2,6 +2,42 @@
 
 Plateforme web de gestion des présences, des horaires et des congés pour cliniques vétérinaires.
 
+## Vision client
+
+*Rédigé du point de vue des utilisateurs réels de VetTime : les équipes des cliniques vétérinaires.*
+
+### Qui sont nos utilisateurs ?
+
+VetTime s'adresse aux petites et moyennes cliniques vétérinaires, et plus précisément :
+
+- **Les employés** (vétérinaires, techniciens en santé animale, réceptionnistes) qui pointent leurs heures et consultent leur horaire.
+- **Les gérants** qui planifient les quarts, corrigent les poinçons et approuvent les congés.
+- **Les propriétaires de clinique** qui veulent une vue d'ensemble multi-établissement et des données fiables pour la paie.
+
+### Quel problème VetTime résout
+
+Deux situations réelles :
+
+- Dans une clinique, le suivi des présences se fait **encore sur papier**. Les feuilles se perdent, les erreurs de saisie sont fréquentes et corriger un poinçon prend du temps.
+- Dans une autre, on utilise **Agendrix**, un outil externe qui répond en partie au besoin, mais à un coût récurrent et sans lien direct avec les rapports internes.
+
+Dans les deux cas, les données sont **fragmentées, peu fiables et difficiles à consolider**. Calculer les heures travaillées, les retards ou les heures supplémentaires devient une tâche manuelle sujette aux erreurs.
+
+### La solution envisagée
+
+VetTime est une **application web transactionnelle** qui centralise la gestion des présences :
+
+- L'employé **pointe son entrée et sa sortie** en quelques clics, depuis n'importe quel poste.
+- Le gérant **gère les horaires, corrige les poinçons et approuve les congés** dans la même interface.
+- La clinique obtient des **rapports d'heures, de présence, de retards et de heures supplémentaires** automatiques et exportables.
+- Les cliniques à **plusieurs établissements** gardent tout dans un seul système.
+
+Le tout est **accessible en ligne, sans installation**, et les correcteurs du cours y accèdent directement.
+
+### Pourquoi maintenant
+
+Le besoin est réel et observé sur le terrain. Une solution légère, adaptée aux petites cliniques et moins coûteuse qu'un abonnement générique, comble un vide concret — tout en servant de terrain d'apprentissage pour les notions de génie logiciel du cours (authentification, base de données, déploiement, observabilité).
+
 ## Contexte
 
 Le projet initial consistait à développer une plateforme d'audit/scanner de sécurité. Après
