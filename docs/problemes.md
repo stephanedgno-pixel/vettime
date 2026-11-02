@@ -74,6 +74,21 @@ l'apprentissage des outils de génie logiciel.
 - **Leçon** : GitHub sépare les permissions ; pousser une CI exige un scope
   explicite (mesure anti-abus).
 
+### 9. Fichier de test corrompu → échec CI
+
+- **Symptôme** : la pipeline CI envoie un email « test fail » ; le test
+  `test_health` ne passe pas.
+- **Cause** : la première ligne de `tests/test_health.py` était corrompue —
+  un fragment « workflo » (issu du mot « workflow » du `ci.yml`) était collé
+  devant `from fastapi.testclient import TestClient`, créant une erreur de
+  syntaxe. pytest ne pouvait pas collecter le test.
+- **Solution** : réécriture propre du fichier (heredoc), puis `commit` + `push`
+  → la CI repasse au vert.
+- **Leçon** : un copier-coller accidentel suffit à corrompre un fichier et
+  faire échouer toute la suite de tests en CI. La CI sert précisément à
+  attraper ça. Vérifier localement (`uv run pytest`) avant de pousser évite
+  un cycle rouge inutile.
+
 ## Bilan
 
 Ces frictions sont typiques de la phase d'amorçage d'un projet. Aucune n'est
