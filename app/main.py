@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-app = FastAPI(title="Plateforme d'audit externe")
+app = FastAPI(title="VetTime")
 @app.get("/health")
 def health():
     return {"status": "ok"}
