@@ -79,3 +79,26 @@ Ce dossier, combiné aux ADRs et au blogue final, sert de preuve d'un usage
 **critique** de l'IA. Aux entretiens, l'étudiant devra être capable d'expliquer
 *lui-même* chaque choix (ex. « pourquoi Postgres », « pourquoi sessions httpOnly
 plutôt que JWT Bearer ») sans s'appuyer sur l'IA présente.
+
+---
+
+## Jalon 2 — PostgreSQL sur le ThinkCentre (session en cours)
+
+*[À remplir au fil de l'eau — pas reconstruit après coup]*
+
+Cette section documente, pour le Jalon 2, les **étapes** posées par l'étudiant et
+les **questions** adressées à l'IA pour installer et configurer PostgreSQL sur le
+ThinkCentre (Debian, 192.168.10.131), puis exécuter le schéma `docs/schema-v1.sql`.
+
+### Questions posées à l'IA
+- Comment exécuter le fichier `schema-v1.sql` dans la base PostgreSQL `vettime` ?
+
+### Étapes réalisées
+- Vérif `psql --version` → PostgreSQL 15.19 déjà installé (installation fraîche). Aucune installation requise.
+- `ALTER ROLE vettime WITH PASSWORD '...'` pour corriger un mot de passe placeholder entré par erreur sur le rôle.
+- `CREATE DATABASE vettime OWNER vettime` (si pas déjà créée).
+- Transfert `schema-v1.sql` vers le ThinkCentre + exécution via `psql -f` pour créer les tables du schéma.
+- Exécution réussie : 11 tables créées (roles, utilisateurs, statuts_journee, employes, pointages, jours_feries, periodes_verrouillage, horaires, demandes_conge, banques_vacances, banques_maladie).
+
+### Ce que l'IA a aidé / où elle a déçu
+- (à compléter en direct)
