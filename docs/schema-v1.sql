@@ -1,146 +1,146 @@
 -- ============================================================
--- VetTime — Schéma de données commenté (v1)
+-- VetTime — Schéma de données commenté (v1.1)
 -- Jalon 2 : Architecture et données
 -- ============================================================
--- But : ce script crée le modèle relationnel PostgreSQL. Chaque table et
--- chaque champ sont commentés. Les relations (clés étrangères) sont explicites.
--- Convention : clés primaires = id_<table> (SERIAL). Tout est en français
--- dans les noms de colonnes pour rester lisible pour la cliente.
+-- Statut : v1.1 — raffiné après validation de la cliente (propriétaire
+-- de clinique vétérinaire), 2026-11-03. Les parties [VALIDÉ CLIENTE]
+-- reflètent ses réponses ; [PROPOSÉ] = à confirmer.
 --
--- Loi 25 (dès la conception) : on minimise les données personnelles.
--- Aucun champ sensible superflu (ex: pas de numéro d'assurance sociale ici).
--- Le consentement et la rétention seront documentés dans un ADR dédié.
+-- CONVENTIONS
+--   - Clés primaires : SERIAL (INT auto-incrément), nommées id_xxx.
+--   - Références : INT + FOREIGN KEY explicite.
+--   - Horodatage : TIMESTAMP (heure serveur, timezone locale Québec).
+--   - Pas d'UUID (simplicité MVP).
 --
--- [À VALIDER CLIENTE] = point à confirmer avec la propriétaire des cliniques
--- (voir docs/questions-blanche.md) avant de figer le schéma.
+-- LOI 25 (dès la conception)
+--   - minimisation : on ne stocke que les données nécessaires à la paie ;
+--   - consentement : à documenter (champ prévu si requis) ;
+--   - rétention : données de paie conservées selon normes comptables (7 ans).
+--
+-- ============================================================
+-- RÈGLES DE PAIE — VALIDÉES CLIENTE (2026-11-03)
+-- ============================================================
+--  1. Paie aux 2 semaines (quinzaine). Verrou après export comptable.
+--  2. Heures supplémentaires : taux 1.5x au-delà de 40 h/semaine (hebdo).
+--  3. Jours fériés : clinique FERMÉE, personne ne travaille. Indemnité
+--     légale QC versée (calculée sur les semaines précédentes). Aucune
+--     majoration (pas de travail ce jour-là).
+--  4. Banque vacances : au renouvellement (~1er mai), solde REPORTÉ.
+--  5. Banque maladie : au renouvellement (~1er janvier), solde PAYÉ si
+--     inutilisé (cash-out), sinon perdu.
+--  6. Correction après verrou : reportée à la paie suivante (heures
+--     ajoutées au prochain traitement). Toute modification/discrepance
+--     approuvée par admin OU gérant (jamais par l'employé seul).
+--  7. Heures prévues varient par employé et d'une semaine à l'autre
+--     (planifiées dans horaires).
 -- ============================================================
 
 -- ---------- Auth & rôles (issue #1) ----------
--- Gère qui peut se connecter et avec quel niveau d'accès.
-
 CREATE TABLE roles (
     id_role      SERIAL PRIMARY KEY,
-    nom          VARCHAR(30) NOT NULL UNIQUE,  -- 'employe', 'gerant', 'admin'
+    nom          VARCHAR(30) NOT NULL UNIQUE,  -- employe, gerant, admin
     description  VARCHAR(100),
     cree_le      TIMESTAMP NOT NULL DEFAULT NOW()
 );
--- Relation : 1 rôle -> plusieurs utilisateurs (utilisateurs.id_role)
+-- [VALIDÉ CLIENTE] rôles pertinents : employe, gerant (gestionnaire), admin.
 
 CREATE TABLE utilisateurs (
     id_utilisateur      SERIAL PRIMARY KEY,
-    email               VARCHAR(100) NOT NULL UNIQUE,       -- identifiant de connexion
-    mot_de_passe_hash   VARCHAR(255) NOT NULL,             -- bcrypt, JAMAIS en clair
+    email               VARCHAR(100) NOT NULL UNIQUE,
+    mot_de_passe_hash   VARCHAR(255) NOT NULL,  -- bcrypt, JAMAIS en clair
     id_role             INT NOT NULL REFERENCES roles(id_role),
     nom_complet         VARCHAR(100),
-    actif               BOOLEAN NOT NULL DEFAULT TRUE,     -- compte désactivable sans suppression
+    actif               BOOLEAN NOT NULL DEFAULT TRUE,
     cree_le             TIMESTAMP NOT NULL DEFAULT NOW(),
     modifie_le          TIMESTAMP
 );
--- Relation : utilisateurs.id_role -> roles.id_role
 
--- ---------- Référence : statuts d'une journée ----------
--- Qualifie la nature d'une journée ou d'un pointage.
-
+-- ---------- Référence ----------
 CREATE TABLE statuts_journee (
     id_statut   SERIAL PRIMARY KEY,
-    libelle     VARCHAR(50) NOT NULL  -- 'Travail Normal', 'Garde Clinique', 'Astreinte Domicile', 'Congé', 'Maladie'
+    libelle     VARCHAR(50) NOT NULL  -- [VALIDÉ CLIENTE] 'Travail', 'Congé', 'Maladie'
 );
--- [À VALIDER CLIENTE] : confirmer la liste complète des statuts.
+-- [VALIDÉ CLIENTE] 3 statuts de journée seulement : Travail, Congé, Maladie.
+-- Congé = journée de vacances (peut déduire banques_vacances) ; Maladie =
+-- congé de maladie (banques_maladie). Garde/Astreinte non retenues.
 
 -- ---------- Employés (RH) ----------
--- Dossier personnel de l'employé. Lié à un compte utilisateur (auth).
-
 CREATE TABLE employes (
     id_employe              SERIAL PRIMARY KEY,
-    utilisateur_id          INT REFERENCES utilisateurs(id_utilisateur),  -- lien auth (NULL si pas encore de compte)
+    utilisateur_id          INT REFERENCES utilisateurs(id_utilisateur),
     nom                     VARCHAR(50) NOT NULL,
     prenom                  VARCHAR(50) NOT NULL,
-    poste                   VARCHAR(50),  -- 'Vétérinaire', 'ASV', 'Secrétaire'
-    heures_contrat_semaine  DECIMAL(4,2)  -- ex: 39.00 — base du calcul des heures supplémentaires
+    poste                   VARCHAR(50),  -- [VALIDÉ CLIENTE] vétérinaire, technicienne, animalière, réceptionniste, gestionnaire
+    heures_contrat_semaine  DECIMAL(4,2)  -- [VALIDÉ CLIENTE] valeur nominale; le réel est planifié dans horaires (varie / sem.)
 );
--- Relation : employes.utilisateur_id -> utilisateurs.id_utilisateur (1:1 souhaité)
--- Relation : employes.id_employe -> pointages.id_employe, horaires.id_employe, demandes_conge.id_employe, banques.*.id_employe
 
--- ---------- Pointages (attendance — cœur du totalisateur) ----------
--- Une ligne par journée travaillée. Champs TIME nullable pour le punch ouvert.
-
+-- ---------- Pointages (attendance) ----------
 CREATE TABLE pointages (
-    id_pointage   SERIAL PRIMARY KEY,
-    id_employe    INT NOT NULL REFERENCES employes(id_employe),
-    date_jour     DATE NOT NULL,
-    arrivee_matin TIME,        -- nullable : rempli à l'arrivée
-    debut_diner   TIME,        -- nullable
-    fin_diner     TIME,        -- nullable
-    depart_soir   TIME,        -- nullable : rempli au départ (punch ouvert)
-    id_statut     INT REFERENCES statuts_journee(id_statut),
-    -- [À VENIR #7/#9] : corrige_par, corrige_le, est_discordance, approuve_admin
-    UNIQUE(id_employe, date_jour)   -- pas 2 pointages le même jour
+    id_pointage     SERIAL PRIMARY KEY,
+    id_employe      INT NOT NULL REFERENCES employes(id_employe),
+    date_jour       DATE NOT NULL,
+    arrivee_matin   TIME,
+    debut_diner     TIME,
+    fin_diner       TIME,
+    depart_soir     TIME,
+    id_statut       INT REFERENCES statuts_journee(id_statut),
+    -- [VALIDÉ CLIENTE] Heures sup : 1.5x > 40h/sem (calcul hebdo).
+    -- Champs à venir (#7/#9) : corrige_par, corrige_le, est_discordance, approuve_admin
+    UNIQUE(id_employe, date_jour)
 );
--- Relation : pointages.id_employe -> employes.id_employe
--- Relation : pointages.id_statut -> statuts_journee.id_statut
--- Heures travaillées = (depart_soir - arrivee_matin) - (fin_diner - debut_diner)
 
--- ---------- Jours fériés (paie Québec) ----------
--- Indemnité payée si absent ; majoration si travaillé.
-
+-- ---------- Jours fériés (paie QC) ----------
 CREATE TABLE jours_feries (
     id_jour_ferie   SERIAL PRIMARY KEY,
     date_jour       DATE NOT NULL UNIQUE,
-    nom             VARCHAR(60) NOT NULL,       -- 'Noël', 'Jour de l'An', 'Action de grâce'
-    taux_majoration DECIMAL(3,2),               -- 1.50 = temps et demi, 2.00 = double, NULL = fermé
-    indemnite_payee BOOLEAN NOT NULL DEFAULT TRUE  -- si absent ce jour, l'employé reçoit l'indemnité
+    nom             VARCHAR(60) NOT NULL,
+    indemnite_payee BOOLEAN NOT NULL DEFAULT TRUE  -- clinique FERMÉE, indemnité légale QC
 );
--- [À VALIDER CLIENTE] : taux par jour (1.5x vs 2x), jours fermés vs ouverts.
--- Pas de FK : table de référence consultée par la logique de paie.
+-- [VALIDÉ CLIENTE] Clinique fermée les jours fériés, personne ne travaille.
+-- taux_majoration SUPPRIMÉ : aucun travail ce jour → pas de majoration.
+-- L'indemnité est calculée selon les règles QC (semaines précédentes).
 
--- ---------- Verrouillage des périodes (sécurité paie) ----------
--- Règle métier : FastAPI refuse toute modif de pointage dans une période verrouillée.
-
+-- ---------- Verrouillage périodes (sécurité paie) ----------
 CREATE TABLE periodes_verrouillage (
     id_periode      SERIAL PRIMARY KEY,
-    date_debut      DATE NOT NULL,   -- début de quinzaine
-    date_fin        DATE NOT NULL,   -- fin de quinzaine
+    date_debut      DATE NOT NULL,   -- [VALIDÉ CLIENTE] quinzaine (2 sem.)
+    date_fin        DATE NOT NULL,
     verrouillee     BOOLEAN NOT NULL DEFAULT FALSE,
     verrouillee_par INT REFERENCES utilisateurs(id_utilisateur),
     verrouillee_le  TIMESTAMP
 );
--- [À VALIDER CLIENTE] : période = quinzaine ? Qui peut déverrouiller (admin seulement) ?
--- Relation : periodes_verrouillage.verrouillee_par -> utilisateurs.id_utilisateur
+-- [VALIDÉ CLIENTE] Paie 2 semaines. Après export comptable -> verrou.
+-- Correction post-verrou : reportée à la paie suivante (heures ajoutées
+-- au prochain traitement). Modif/discrepance approuvée par admin OU gérant.
 
 -- ---------- Horaire planifié (issues #3/#6) [PROPOSÉ] ----------
--- Le QUAND prévu (vs pointages = le QUAND réel). Sert aux discordances (#9).
-
 CREATE TABLE horaires (
-    id_horaire  SERIAL PRIMARY KEY,
-    id_employe  INT NOT NULL REFERENCES employes(id_employe),
-    date_jour   DATE NOT NULL,
-    heure_debut TIME,
-    heure_fin   TIME,
-    id_statut   INT REFERENCES statuts_journee(id_statut),
+    id_horaire   SERIAL PRIMARY KEY,
+    id_employe   INT NOT NULL REFERENCES employes(id_employe),
+    date_jour    DATE NOT NULL,
+    heure_debut  TIME,
+    heure_fin    TIME,
+    id_statut    INT REFERENCES statuts_journee(id_statut),
     UNIQUE(id_employe, date_jour)
 );
--- Relation : horaires.id_employe -> employes.id_employe
--- Discordance (#9) = ecart entre horaires (prévu) et pointages (réel)
+-- [VALIDÉ CLIENTE] Heures prévues varient / employé et / semaine.
 
 -- ---------- Demandes de congé (issues #4/#5) [PROPOSÉ] ----------
 CREATE TABLE demandes_conge (
     id_demande   SERIAL PRIMARY KEY,
     id_employe   INT NOT NULL REFERENCES employes(id_employe),
-    type_conge   VARCHAR(30) NOT NULL,  -- 'vacances', 'maladie', 'personnel'
+    type_conge   VARCHAR(30) NOT NULL,  -- vacances (banque), maladie (banque)
     date_debut   DATE NOT NULL,
     date_fin     DATE NOT NULL,
     motif        TEXT,
-    statut       VARCHAR(20) NOT NULL DEFAULT 'en_attente',  -- 'en_attente', 'approuve', 'refuse'
+    statut       VARCHAR(20) NOT NULL DEFAULT 'en_attente',  -- en_attente, approuve, refuse
     approuve_par INT REFERENCES utilisateurs(id_utilisateur),
     approuve_le  TIMESTAMP,
     cree_le      TIMESTAMP NOT NULL DEFAULT NOW()
 );
--- Relation : demandes_conge.id_employe -> employes.id_employe
--- Relation : demandes_conge.approuve_par -> utilisateurs.id_utilisateur
+-- [VALIDÉ CLIENTE] Approbation par admin OU gérant (règle #6).
 
 -- ---------- Banques de vacances (issue #10) [PROPOSÉ] ----------
--- Solde d'heures de vacances, renouvelable ~1er mai.
-
 CREATE TABLE banques_vacances (
     id_banque     SERIAL PRIMARY KEY,
     id_employe    INT NOT NULL REFERENCES employes(id_employe) UNIQUE,
@@ -148,12 +148,9 @@ CREATE TABLE banques_vacances (
     renouvellement DATE,  -- ~1er mai
     annee         INT
 );
--- [À VALIDER CLIENTE] : reset le 1er mai ? solde reporté ou perdu ?
--- Relation : banques_vacances.id_employe -> employes.id_employe (1:1)
+-- [VALIDÉ CLIENTE] Renouvellement (~1er mai) : solde REPORTÉ (carry-over).
 
 -- ---------- Banques de maladie (issue #11) [PROPOSÉ] ----------
--- Solde d'heures de maladie, renouvelable ~1er janvier.
-
 CREATE TABLE banques_maladie (
     id_banque     SERIAL PRIMARY KEY,
     id_employe    INT NOT NULL REFERENCES employes(id_employe) UNIQUE,
@@ -161,20 +158,15 @@ CREATE TABLE banques_maladie (
     renouvellement DATE,  -- ~1er janvier
     annee         INT
 );
--- [À VALIDER CLIENTE] : reset le 1er janvier ?
--- Relation : banques_maladie.id_employe -> employes.id_employe (1:1)
+-- [VALIDÉ CLIENTE] Renouvellement (~1er janvier) : solde PAYÉ si inutilisé
+-- (cash-out), sinon perdu.
 
 -- ============================================================
--- Résumé des relations (FK) :
---   utilisateurs.id_role        -> roles.id_role
---   employes.utilisateur_id     -> utilisateurs.id_utilisateur
---   pointages.id_employe        -> employes.id_employe
---   pointages.id_statut         -> statuts_journee.id_statut
---   horaires.id_employe         -> employes.id_employe
---   demandes_conge.id_employe   -> employes.id_employe
---   demandes_conge.approuve_par -> utilisateurs.id_utilisateur
---   banques_vacances.id_employe  -> employes.id_employe
---   banques_maladie.id_employe   -> employes.id_employe
---   periodes_verrouillage.verrouillee_par -> utilisateurs.id_utilisateur
---   (jours_feries = table de référence autonome, consultée par la paie)
+-- RELATIONS (résumé)
+--   utilisateurs 1—1 employes.utilisateur_id
+--   roles 1—N utilisateurs.id_role
+--   employes 1—N pointages / horaires / demandes_conge / banques_*
+--   statuts_journee 1—N pointages / horaires
+--   utilisateurs 1—N periodes_verrouillage.verrouillee_par / demandes_conge.approuve_par
+--   (jours_feries est indépendant : consulté par la logique de paie)
 -- ============================================================

@@ -57,3 +57,28 @@ est-elle complète ? Autres statuts possibles ?
 On a reporté le multi-clinique. Si ça revient : une seule base de données avec
 un `clinique_id`, ou des bases séparées par clinique ?
 - [ ] Réponse : __________
+
+---
+
+## Réponses de la cliente (2026-11-03)
+
+1. **Paie aux 2 semaines** (quinzaine).
+2. **Caduque** : clinique fermée les jours fériés, personne ne travaille →
+   pas de majoration. (Elle n'a pas compris la question, le concept ne
+   s'applique pas.)
+3. Clinique **FERMÉE** tous les jours fériés, personne ne travaille.
+   Indemnité légale QC versée.
+4. **Maladie** : payée (cash-out) si inutilisée au renouvellement.
+   **Vacances** : reportées (carry-over). Dates ~1er mai / ~1er janvier
+   confirmées.
+5. Correction après verrou : **heures ajoutées sur la paye suivante**
+   (reportée, pas rétroactive).
+6. Discordances/modifications approuvées par **admin OU gérant**
+   (jamais l'employé seul).
+7. Postes : **vétérinaire, technicienne, animalière, réceptionniste,
+   gestionnaire**.
+8. Heures prévues **varient** par employé et d'une semaine à l'autre.
+   **H.S. = 1.5x au-delà de 40 h/semaine**.
+9. Statuts de journée : **3 choix seulement — Travail, Congé, Maladie**
+   (elle est en congé / elle est en maladie). Garde/Astreinte non retenues.
+10. Multi-clinique : reporté (sans réponse).
