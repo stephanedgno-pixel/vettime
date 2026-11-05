@@ -90,6 +90,16 @@ Cette section documente, pour le Jalon 2, les **étapes** posées par l'étudian
 les **questions** adressées à l'IA pour installer et configurer PostgreSQL sur le
 ThinkCentre (Debian, 192.168.10.131), puis exécuter le schéma `docs/schema-v1.sql`.
 
+### Collaboration avec l'IA — méthode pour les choix techniques
+
+Pour le Jalon 2, j'ai travaillé avec l'assistant (Hermes) comme **collaborateur**, pas comme générateur. Trois dynamiques :
+
+1. **Consultation** : je l'ai consulté pour les choix techniques structurants (framework web, base de données, portée du suivi des banques). Il m'a présenté les options de programmes disponibles et ce que chacune fait.
+2. **Challenge** : je n'ai pas accepté ses suggestions telles quelles. J'ai corrigé l'assistant quand ses analyses étaient inexactes (ex. labels de priorité manquants sur des issues) et j'ai validé les hypothèses de modélisation **avec la cliente** plutôt que de le croire sur parole — ex. jours fériés : il supposait une majoration 1.5×/2× (jour ouvert), or la cliente a révélé que la clinique **ferme** → on a supprimé la colonne `taux_majoration` du schéma.
+3. **Explication des options** : il m'a expliqué concrètement ce que fait chaque option (FastAPI+Jinja+HTMX vs SPA React ; PostgreSQL vs SQLite/MongoDB), ce qui m'a permis de trancher en comprenant, et de documenter dans les ADRs (docs/adr/).
+
+J'ai aussi utilisé GitHub Copilot pour la rédaction en prose du blogue technique 2, mais j'ai validé le contenu et les décisions moi-même (les choix viennent de nos échanges et des ADRs).
+
 ### Questions posées à l'IA
 - Comment exécuter le fichier `schema-v1.sql` dans la base PostgreSQL `vettime` ?
 
