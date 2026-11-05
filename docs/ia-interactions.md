@@ -110,5 +110,23 @@ J'ai aussi utilisé GitHub Copilot pour la rédaction en prose du blogue techniq
 - Transfert `schema-v1.sql` vers le ThinkCentre + exécution via `psql -f` pour créer les tables du schéma.
 - Exécution réussie : 11 tables créées (roles, utilisateurs, statuts_journee, employes, pointages, jours_feries, periodes_verrouillage, horaires, demandes_conge, banques_vacances, banques_maladie).
 
+### Débogage de la connexion FastAPI ↔ PostgreSQL (Étape 4)
+
+Contexte : brancher l'app FastAPI sur la base VetTime (création de `app/database.py` + `.env` avec `DATABASE_URL`).
+
+**Accès à l'infrastructure (SSH).** L'étudiant a configuré une clé SSH (`ct_key`) sur sa machine Windows, donnant à l'IA un accès **direct** au ThinkCentre (192.168.10.131) — pas seulement à sa machine locale. Première tentative de connexion : l'IA a reçu `Permission denied` car la clé n'était pas au nom par défaut ; l'étudiant a confirmé que la clé existait, et l'IA l'a alors spécifiée explicitement (`ssh -i ~/.ssh/ct_key`) — connexion réussie.
+
+**Vérification sur place.** Avant de tester, l'IA a vérifié à distance que les fichiers étaient bien en place (`ls -la .env app/database.py`) et que les dépendances étaient installées (`import sqlalchemy, psycopg, dotenv` → `deps ok`).
+
+**Test et diagnostic.** L'IA a exécuté un script de connexion (`engine.connect()` + `SELECT 1`), qui a révélé **4 erreurs successives**. Chaque erreur a été diagnostiquée à partir du traceback et corrigée à distance :
+
+1. **`TypeError: cannot use a string pattern on a bytes-like object`** — Diagnostic : incompatibilité SQLAlchemy 2.1.8 + psycopg v3.3.8 (la version du serveur revient en `bytes`, SQLAlchemy plante). Correction : `uv remove psycopg && uv add psycopg2-binary`.
+2. **`ModuleNotFoundError: No module named 'psycopg'`** — Diagnostic : en SQLAlchemy 2.1, `postgresql://` pointe par défaut vers le dialecte psycopg **v3** (retiré à l'étape 1). Correction : URL explicite `postgresql+psycopg2://`.
+3. **Mot de passe tronqué (`#` dans l'URL)** — Diagnostic : `#` = fin des identifiants dans une URL ; un mot de passe contenant `#` est coupé avant ce caractère (ex. `M43pz4cx#...` → `M43pz4cx`). Correction : encoder `#` → `%23`.
+4. **`pytest` disparu (cascade)** — Diagnostic : `uv remove psycopg` a aussi retiré les dépendances de test. Correction : `uv sync --extra dev`.
+
+Résultat : `engine.connect().execute(text('SELECT 1')).scalar()` → `1`. Le pont fonctionne.
+
 ### Ce que l'IA a aidé / où elle a déçu
-- (à compléter en direct)
+- **Aidé** : lecture de tracebacks, diagnostic de conflits de versions, proposition de corrections ciblées (changement de pilote DB, encodage d'URL, restauration de dépendances). Accès direct au ThinkCentre via la clé SSH `ct_key` : vérification des fichiers en place et déboguage à distance.
+- **À noter** : l'IA applique les corrections, mais l'étudiant doit **valider et comprendre le « pourquoi »** (ex. pourquoi `postgresql+psycopg2://` et non `postgresql://`) — c'est ce qui sera interrogé à l'entretien.
