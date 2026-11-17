@@ -102,8 +102,8 @@ de congé.
 | Backend | FastAPI |
 | Base de données | PostgreSQL |
 | Authentification | Sessions sécurisées en cookie httpOnly + bcrypt + protection CSRF |
-| Tests | pytest |
-| Intégration continue | GitHub Actions |
+| Tests | pytest + ruff (lint) |
+| Intégration continue | GitHub Actions (pytest + lint + build Docker) |
 | Conteneurisation | Docker Compose |
 | Observabilité | Prometheus + Grafana |
 
