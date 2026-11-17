@@ -1,9 +1,10 @@
 # app/database.py — le module de connexion à PostgreSQL
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from fastapi import HTTPException
 import os
+
 from dotenv import load_dotenv
+from fastapi import HTTPException
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 load_dotenv()  # lit .env (contient l'URL avec le mot de passe)
 

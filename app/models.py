@@ -2,15 +2,24 @@
 # Modèles ORM (SQLAlchemy 2.0) — 11 tables du schéma v1.1 (validé cliente 2026-11-03)
 # LOI 25 (dès la conception) : minimisation — on mappe UNIQUEMENT les champs
 # nécessaires à la paie (aucun surplus). Rétention 7 ans gérée à l'export comptable.
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import (
-    Integer, String, Boolean, DateTime, Date, Time, Numeric, Text,
-    ForeignKey, UniqueConstraint, func,
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    Text,
+    Time,
+    UniqueConstraint,
+    func,
 )
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
 
 class Base(DeclarativeBase):
     """Classe de base : tous les modèles héritent de Base (métadonnées partagées)."""
-    pass
 
 # ---------- Auth & rôles ----------
 class Role(Base):
