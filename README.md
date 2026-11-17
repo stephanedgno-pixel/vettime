@@ -116,7 +116,7 @@ de congé.
 ## Assurance qualité
 
 - **Tests automatisés pytest dès le MVP** : auth, calcul d'heures, permissions par rôle
-- **CI GitHub Actions** : pytest exécuté à chaque push — lint + build Docker prévus au M2
+- **CI GitHub Actions** : pytest exécuté à chaque push — lint (ruff) + build Docker exécutés à chaque push
 - **Pas de mot de passe en clair** : bcrypt obligatoire
 - **Sessions httpOnly + CSRF** : protection contre le vol de session et le CSRF
 
@@ -135,7 +135,7 @@ Utilisateur (navigateur)
       │  HTTP (Jinja2 / HTMX)
       ▼
 FastAPI (app web + API)
-      │  SQL (psycopg)
+      │  SQL (psycopg2)
       ▼
 PostgreSQL (données transactionnelles)
       │  expose /metrics

@@ -122,7 +122,7 @@ Contexte : brancher l'app FastAPI sur la base VetTime (création de `app/databas
 
 1. **`TypeError: cannot use a string pattern on a bytes-like object`** — Diagnostic : incompatibilité SQLAlchemy 2.1.8 + psycopg v3.3.8 (la version du serveur revient en `bytes`, SQLAlchemy plante). Correction : `uv remove psycopg && uv add psycopg2-binary`.
 2. **`ModuleNotFoundError: No module named 'psycopg'`** — Diagnostic : en SQLAlchemy 2.1, `postgresql://` pointe par défaut vers le dialecte psycopg **v3** (retiré à l'étape 1). Correction : URL explicite `postgresql+psycopg2://`.
-3. **Mot de passe tronqué (`#` dans l'URL)** — Diagnostic : `#` = fin des identifiants dans une URL ; un mot de passe contenant `#` est coupé avant ce caractère (ex. `M43pz4cx#...` → `M43pz4cx`). Correction : encoder `#` → `%23`.
+3. **Mot de passe tronqué (`#` dans l'URL)** — Diagnostic : `#` = fin des identifiants dans une URL ; un mot de passe contenant `#` est coupé avant ce caractère (ex. `MonMotDePasse#...` → `M43pz4cx`). Correction : encoder `#` → `%23`.
 4. **`pytest` disparu (cascade)** — Diagnostic : `uv remove psycopg` a aussi retiré les dépendances de test. Correction : `uv sync --extra dev`.
 
 Résultat : `engine.connect().execute(text('SELECT 1')).scalar()` → `1`. Le pont fonctionne.
