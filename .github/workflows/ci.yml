@@ -1,5 +1,6 @@
 name: CI
 on: [push]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -13,3 +14,23 @@ jobs:
         run: uv sync --extra dev
       - name: Run tests
         run: uv run pytest
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Set up Python
+        run: uv python install 3.11
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run ruff (lint)
+        run: uv run ruff check
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t vettime:ci .
