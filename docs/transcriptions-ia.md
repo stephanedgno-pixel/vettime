@@ -39,11 +39,22 @@ IA (extrait) :
 Reflexion : usage "pourquoi cette commande ?" (comprehension) plutot que
 "ecris-moi le code" (production). L'etudiant reprend le controle du sens.
 
-## T3 - Redaction du blogue technique 2 (GitHub Copilot)
+## T3 - Generation du modele ORM (SQLAlchemy) - 2026-11-16
 
-[A remplir : colle ici un extrait VERIDIQUE de ta session Copilot pour le blogue 2
-- prompt + reponse, tel quel. Ex. : ton prompt sur le choix FastAPI+Jinja+HTMX vs
-React et la reponse de Copilot, puis ta validation du contenu.]
+Contexte : creation de `app/models.py` (11 tables mappees en classes SQLAlchemy 2.0).
+L'IA a genere le code complet a partir du schema `docs/schema-v1.sql`.
 
-Reflexion : l'outil produit la prose, l'etudiant garde la responsabilite
-editoriale et valide les decisions (issues de nos echanges + ADRs).
+IA (extrait) :
+> Voici `app/models.py` genere du schema (11 tables, commentaire Loi 25, relations
+> pour J3). Valide avec : uv run python -c "from app.models import Base;
+> print('tables =', len(Base.metadata.tables))"
+
+Etudiant (ecrit le fichier, cree tests/test_models.py, lance) :
+> uv run pytest -v  ->  tests/test_models.py::test_onze_tables PASSED
+
+IA :
+> 5.2 vert : les tests passent (dont test_models -> 11 tables confirmees).
+
+Reflexion : l'IA a produit le code ORM, l'etudiant a VERIFIE par un test
+(test_onze_tables == 11 tables) plutot que de faire confiance aveugle. Meme
+reflexe que T1/T2 : l'IA genere, l'etudiant valide et garde le controle.

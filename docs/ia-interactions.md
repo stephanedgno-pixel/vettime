@@ -132,3 +132,5 @@ Résultat : `engine.connect().execute(text('SELECT 1')).scalar()` → `1`. Le po
 - **À noter** : l'IA applique les corrections, mais l'étudiant doit **valider et comprendre le « pourquoi »** (ex. pourquoi `postgresql+psycopg2://` et non `postgresql://`) — c'est ce qui sera interrogé à l'entretien.
 
 > Transcriptions brutes (sessions réelles) : voir [transcriptions-ia.md](./transcriptions-ia.md).
+
+> Transcriptions brutes (sessions reelles) : voir [transcriptions-ia.md](./transcriptions-ia.md).
