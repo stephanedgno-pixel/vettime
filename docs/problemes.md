@@ -105,6 +105,39 @@ l'apprentissage des outils de génie logiciel.
   (uv les installe par défaut). Bien déclarer les dépendances de test
   est au cœur de la gestion des dépendances (module 2).
 
+## Problématiques Jalon 2
+
+### 1. Mot de passe de base de donnees expose dans l historique Git
+- **Symptome** : un ancien mot de passe (exemple bidon `M43pz4cx#...`) figurait dans l historique Git et etait reutilise pour le role PostgreSQL.
+- **Cause** : mot de passe ecrit en clair dans `docs/ia-interactions.md` initial, puis reutilise tel quel pour le role DB.
+- **Solution** : rotation via `ALTER ROLE vettime WITH PASSWORD '...'` ; redaction/suppression des occurrences dans les docs ; `.env` gitignore (jamais trace dans le depot).
+- **Lecon** : jamais de secret en clair dans le depot ; si un secret fuit, le renouveler immediatement ; isoler les secrets dans `.env` gitignore.
+
+### 2. Boucle d authentification echouee — encodage `#` / `%23`
+- **Symptome** : `curl /health/db` renvoie `password authentication failed for user "vettime"` (503) en boucle, malgre une apparente correspondance.
+- **Cause** : le mot de passe contenait un `#` ; il avait ete encode en `%23` des DEUX cotes (dans `ALTER ROLE` SQL et dans le `.env` URL). L ALTER stockait litteralement `%23`, alors que le `.env` decodait `%23` -> `#` : les deux ne correspondaient pas.
+- **Solution** : `#` en clair cote SQL (`ALTER ROLE ... PASSWORD '...#...'`) ; `%23` encode cote URL / `.env`. (Documente dans `docs/ia-interactions.md`, entree #5.)
+- **Lecon** : `#` tronque une URL ; en SQL il est litteral, en URL / `.env` il doit etre encode `%23`. Jamais identique des deux cotes.
+
+### 3. CI Docker en echec apres renommage du projet
+- **Symptome** : le job `docker` de la CI echoue sur `uv sync --frozen`.
+- **Cause** : apres le renommage `audit` -> `vettime` dans `pyproject.toml`, le `uv.lock` contenait encore `name = "inf1410-audit"` -> le lock etait desynchronise.
+- **Solution** : `uv lock` pour regenerer le lock avec le nouveau nom ; commit + push -> le job repasse au vert.
+- **Lecon** : apres toute modification de `pyproject.toml`, regenerer `uv.lock` ; en CI, `--frozen` sert justement a detecter toute desynchronisation entre le projet et le lock.
+
+### 4. Incoherence auth blogue vs README
+- **Symptome** : `docs/blogue-technique-1.md` indique l authentification (sessions vs JWT) « pas encore tranchee », alors que le `README` decrivait deja une decision prise.
+- **Cause** : le blogue 1 a ete redige avant la decision ; le README a ete mis a jour apres, sans reconcilier.
+- **Solution** : addendum dans `docs/blogue-technique-2.md` enoncant la decision finale (sessions httpOnly + bcrypt + CSRF, JWT optionnel) alignee au README.
+- **Lecon** : garder les documents coherents entre eux ; un blogue est un recit date, mais les decisions finales doivent etre reconciliées avec la documentation technique.
+
+### 5. Conflit de rebase Git lors d un push refuse
+- **Symptome** : `git push` refuse (edition manuelle sur GitHub creant un commit divergent) ; `git pull --rebase` bloque sur un conflit dans `docs/ia-interactions.md`.
+- **Cause** : modification du meme fichier a la fois en local et via l editeur web GitHub -> divergence.
+- **Solution** : `git checkout --theirs docs/ia-interactions.md` (garder la version web redigee) + `git rebase --continue` + push.
+- **Lecon** : eviter d editer un fichier a la fois localement et sur GitHub ; en cas de conflit, choisir la bonne version et poursuivre le rebase.
+
+
 ## Bilan
 
 Ces frictions sont typiques de la phase d'amorçage d'un projet. Aucune n'est
