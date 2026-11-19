@@ -64,3 +64,13 @@ En résumé, ce schéma n'est pas seulement un ensemble de tables relationnelles
 - [ ] Coller les liens ici :
   - Session 1 : ___________________________
   - Session 2 : ___________________________
+
+---
+
+## Addendum — réconciliation authentification & transcriptions (finalisation Jalon 2)
+
+### Authentification (décision finale)
+L'ouverture posée dans le blogue 1 — *sessions sécurisées vs JWT* — est désormais tranchée et alignée avec le README : le projet retient des **sessions en cookie `httpOnly` + `Secure` + `SameSite`**, mots de passe hachés avec **bcrypt**, et **tokens CSRF** sur les formulaires HTMX (POST). On n'utilise pas de JWT Bearer : pour une application server-rendered (FastAPI + Jinja2 + HTMX), les sessions suffisent et évitent la complexité (CORS, refresh tokens) qu'aurait ajoutée une SPA. Un JWT signé reste *optionnel* si une API bonus voit le jour.
+
+### Transcriptions de session (publiées)
+Les transcriptions brutes des sessions IA (setup PostgreSQL sur le ThinkCentre, affinement du schéma avec la cliente, débogage de la connexion FastAPI ↔ PostgreSQL) sont disponibles dans `docs/transcriptions-ia.md` et `docs/ia-interactions.md` du dépôt (voir README). Le TODO « publier sur gist.github.com » de la section précédente est donc remplacé par ces fichiers versionnés.
