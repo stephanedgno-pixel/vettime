@@ -19,31 +19,31 @@
 
 ## Étapes cibles
 
-### ⬜ Étape 1 — Valider le domaine avec la cliente
+### ✅ Étape 1 — Valider le domaine avec la cliente
 - Prendre `docs/questions-blanche.md`, rencontrer la proprio, noter ses réponses
   (règles de paie, jours fériés, banques, verrouillage).
 - Livrable : questions-blanche.md complété.
 
-### ⬜ Étape 2 — Schéma de données commenté
+### ✅ Étape 2 — Schéma de données commenté
 - Enrichir `docs/schema-v1.sql` : commentaire par table/champ + relations (FK).
 - Intégrer Loi 25 (consentement, minimisation).
 - Setup PostgreSQL sur ThinkCentre + exécuter le schéma (le rendre réel).
 - Livrable : `docs/schema-v1.sql` commenté + BD créée.
 
-### ⬜ Étape 3 — ADRs (docs/adr/)
+### ✅ Étape 3 — ADRs (docs/adr/)
 - ADR-001 : Framework web (FastAPI + Jinja/HTMX vs React SPA)
 - ADR-002 : Base de données (PostgreSQL vs SQLite/Mongo)
 - ADR-003 (recommandé) : organisation du code / couches
 - Chaque ADR : contexte, décision, alternatives rejetées + pourquoi.
 - Livrable : `docs/adr/adr-001.md`, `adr-002.md`, `adr-003.md`.
 
-### ⬜ Étape 4 — Implémentation M2 (code réel)
+### ✅ Étape 4 — Implémentation M2 (code réel)
 - Connexion FastAPI ↔ PostgreSQL (SQLAlchemy ou psycopg).
 - Modèles de base + premiers endpoints.
 - Étendre les tests automatisés.
 - Livrable : app fonctionnelle branchée sur la BD + tests verts.
 
-### ⬜ Étape 5 — Blogue technique 2
+### ✅ Étape 5 — Blogue technique 2
 - `docs/blogue-technique-2.md` : décision archi + contexte + alt. rejetées
   + obstacle concret J2 rencontré/résolu + ce que le schéma révèle du domaine.
 - Publier 1-2 transcriptions de session (gist) et les lier.
