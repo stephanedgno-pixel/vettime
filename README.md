@@ -206,3 +206,28 @@ itération ultérieure si le temps le permet :
 - **M4** : CRUD présences / horaires / congés
 - **M5** : Rapports + gestion multi-clinique
 - **M6** : Déploiement public + observabilité Grafana (module 5)
+
+---
+
+## Documentation du projet
+
+- `docs/blogue-technique-1.md` et `docs/blogue-technique-2.md` : blogues techniques (récit du projet, décisions, réconciliation de l'authentification).
+- `docs/transcriptions-ia.md` : transcriptions brutes des sessions de travail avec l'IA (setup PostgreSQL sur le ThinkCentre, affinement du schéma avec la cliente, débogage de la connexion FastAPI ↔ PostgreSQL).
+- `docs/ia-interactions.md` : synthèse des interactions IA, décisions et leçons — notamment le **piège d'encodage `#`** : en clair côté SQL (`ALTER ROLE ... PASSWORD '...#...'`), encodé `%23` côté URL / `.env`.
+- `docs/point-ancrage.md` : point d'ancrage / démarrage sur le ThinkCentre (`cd ~/vettime`).
+- ADRs : décisions architecturales documentées (voir `docs/`).
+
+> Note de renommage : le dépôt et l'infrastructure portaient initialement le nom `audit` (héritage du projet de scanner de sécurité abandonné) ; ils ont été renommés `vettime` (pyproject, docker-compose, dossier, documentation).
+
+## Modèle de données
+
+- **11 tables** SQLAlchemy 2.0 (ORM) couvrant utilisateurs, rôles, cliniques, présences, horaires, congés, etc.
+- Schéma relationnel validé (clés étrangères, contraintes d'intégrité référentielle).
+- Connexion DB gracieuse : `/health/db` renvoie `503` (au lieu de crasher) si PostgreSQL est injoignable.
+
+## Confidentialité et Loi 25 (minimisation des données)
+
+Conformément à la *Loi 25*, le modèle de données applique le principe de **minimisation** : seules les données strictement nécessaires au fonctionnement (présences, horaires, rôles, cliniques) sont collectées ; aucune donnée personnelle sensible superflue.
+
+- Mots de passe hachés avec **bcrypt**, jamais en clair.
+- Aucun mot de passe, clé ou secret n'est exposé dans la documentation ni le dépôt (`.env` gitignoré).
