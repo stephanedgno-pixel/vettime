@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: appuser
       POSTGRES_PASSWORD: apppass
-      POSTGRES_DB: auditdb
+      POSTGRES_DB: vettimedb
     volumes:
       - dbdata:/var/lib/postgresql/data
     healthcheck:
@@ -20,6 +20,6 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://appuser:***@db:5432/auditdb
+      DATABASE_URL: postgresql://appuser:***@db:5432/vettimedb
 volumes:
   dbdata:

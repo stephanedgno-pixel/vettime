@@ -32,6 +32,6 @@
 4. Publier transcriptions gist IA (J4) + vidéos YouTube unlisted.
 
 ## Commandes de reprise
-- ThinkCentre : `cd ~/audit && git pull` (après le push de cette session).
+- ThinkCentre : `cd ~/vettime && git pull` (après le push de cette session).
 - Local Windows : `cd C:/Users/Utilisateur/vettime`.
 - L'IA relira ce fichier + `ia-interactions.md` + `jalon2-plan.md` pour reprendre le fil.
