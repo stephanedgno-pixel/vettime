@@ -1,20 +1,35 @@
+# ============================================================================
+# CI GitHub Actions — VetTime (INF1410)
+# Declenchee a chaque `git push` sur la branche main.
+# 3 jobs independants : tests (pytest), lint (ruff), build Docker.
+# Chaque job tourne sur une VM Ubuntu vierge fournie par GitHub.
+# ============================================================================
+
 name: CI
+
+# Declencheur : lance la CI a chaque push (y compris un PR merge sur main)
 on: [push]
 
 jobs:
+  # --------------------------------------------------------------------------
+  # JOB 1 — TESTS : valide que l application fonctionne (suite pytest)
+  # --------------------------------------------------------------------------
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest          # VM Ubuntu fournie par GitHub
     steps:
-      - uses: actions/checkout@v4
-      - name: Install uv
+      - uses: actions/checkout@v4   # 1. Recupere le code du depot dans la VM
+      - name: Install uv            # 2. Installe le gestionnaire de paquets uv (Astral)
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - name: Set up Python
+      - name: Set up Python         # 3. Installe Python 3.11 via uv
         run: uv python install 3.11
-      - name: Install dependencies
+      - name: Install dependencies  # 4. Installe dependances + extras "dev" (pytest) depuis uv.lock
         run: uv sync --extra dev
-      - name: Run tests
+      - name: Run tests             # 5. Lance tous les tests (tests/test_*.py)
         run: uv run pytest
 
+  # --------------------------------------------------------------------------
+  # JOB 2 — LINT : verifie le style/qualite du code avec ruff (lint statique)
+  # --------------------------------------------------------------------------
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -25,12 +40,15 @@ jobs:
         run: uv python install 3.11
       - name: Install dependencies
         run: uv sync --extra dev
-      - name: Run ruff (lint)
+      - name: Run ruff (lint)       # Analyse statique : style, imports inutiles, erreurs courantes
         run: uv run ruff check
 
+  # --------------------------------------------------------------------------
+  # JOB 3 — DOCKER : garantit que l image de l app se construit correctement
+  # --------------------------------------------------------------------------
   docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build image
+      - name: Build image          # Construit l image depuis le Dockerfile (tag vettime:ci)
         run: docker build -t vettime:ci .
