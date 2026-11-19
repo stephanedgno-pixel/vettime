@@ -127,6 +127,16 @@ Contexte : brancher l'app FastAPI sur la base VetTime (création de `app/databas
 
 Résultat : `engine.connect().execute(text('SELECT 1')).scalar()` → `1`. Le pont fonctionne.
 
+
+### 5. Piege d encodage `#` : SQL en clair vs URL encode `%23`
+- Diagnostic : un mot de passe contenant `#` (ex. `MonMotDePasse#87654`) doit etre ecrit **en clair** dans
+  `ALTER ROLE ... PASSWORD MonMotDePasse#87654` (cote SQL, le `#` est litteral), mais **encode `%23`**
+  dans une URL / `.env` (`MonMotDePasse%2387654`) car `#` tronque l URL a cet endroit.
+- Erreur commise : `%23` mis des DEUX cotes -> l ALTER stocke le litteral `MonMotDePasse%2387654`, alors
+  que le `.env` decode `%23`->`#` et envoie `MonMotDePasse#87654` -> `password authentication failed` en boucle
+  (la session a tourne en rond ~2 h).
+- Correction : `#` en clair cote SQL, `%23` encode cote URL/`.env` -- jamais identique des deux cotes.
+
 ### Ce que l'IA a aidé / où elle a déçu
 - **Aidé** : lecture de tracebacks, diagnostic de conflits de versions, proposition de corrections ciblées (changement de pilote DB, encodage d'URL, restauration de dépendances). Accès direct au ThinkCentre via la clé SSH `ct_key` : vérification des fichiers en place et déboguage à distance.
 - **À noter** : l'IA applique les corrections, mais l'étudiant doit **valider et comprendre le « pourquoi »** (ex. pourquoi `postgresql+psycopg2://` et non `postgresql://`) — c'est ce qui sera interrogé à l'entretien.
