@@ -235,4 +235,4 @@ Conformément à la *Loi 25*, le modèle de données applique le principe de **m
 ## Demonstration video
 
 - Enregistree le 2026-11-18 — YouTube (non repertorie) : https://youtu.be/yheT43UC4Sk
-- Enregistree le 2026-11-18 — Creation de la page YouTube + depot des videos (acces correcteur) : https://youtu.be/B6Dn1Zq2qnk
+- Enregistree le 2026-11-21 — Mettre en ligne des videos sur YouTube (acces correcteur) : https://youtu.be/lMnci8FpNdY
