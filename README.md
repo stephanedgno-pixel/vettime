@@ -231,3 +231,7 @@ Conformément à la *Loi 25*, le modèle de données applique le principe de **m
 
 - Mots de passe hachés avec **bcrypt**, jamais en clair.
 - Aucun mot de passe, clé ou secret n'est exposé dans la documentation ni le dépôt (`.env` gitignoré).
+
+## Demonstration video
+
+- Enregistree le 2026-11-18 — YouTube (non repertorie) : https://youtu.be/yheT43UC4Sk
