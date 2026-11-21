@@ -58,14 +58,6 @@ En résumé, ce schéma n'est pas seulement un ensemble de tables relationnelles
 
 ---
 
-## Transcriptions de session (à publier)
-
-- [ ] Publier 1-2 sessions sur gist.github.com (ex. : setup PostgreSQL sur le ThinkCentre, affinement du schéma avec la cliente).
-- [ ] Coller les liens ici :
-  - Session 1 : ___________________________
-  - Session 2 : ___________________________
-
----
 
 ## Addendum — réconciliation authentification & transcriptions (finalisation Jalon 2)
 

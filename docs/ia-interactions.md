@@ -143,4 +143,3 @@ Résultat : `engine.connect().execute(text('SELECT 1')).scalar()` → `1`. Le po
 
 > Transcriptions brutes (sessions réelles) : voir [transcriptions-ia.md](./transcriptions-ia.md).
 
-> Transcriptions brutes (sessions reelles) : voir [transcriptions-ia.md](./transcriptions-ia.md).

@@ -14,6 +14,7 @@
 - **Synthèse des interactions IA** : `docs/ia-interactions.md`
 - **Journal des problématiques** : `docs/problemes.md`
 - **Plan Jalon 2** : `docs/jalon2-plan.md`
+- **Problématique** : `docs/problematique.md`
 
 ## Ce qui a été livré (Jalon 2)
 

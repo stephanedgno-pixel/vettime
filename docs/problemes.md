@@ -108,7 +108,7 @@ l'apprentissage des outils de génie logiciel.
 ## Problématiques Jalon 2
 
 ### 1. Mot de passe de base de donnees expose dans l historique Git
-- **Symptome** : un ancien mot de passe (exemple bidon `M43pz4cx#...`) figurait dans l historique Git et etait reutilise pour le role PostgreSQL.
+- **Symptome** : un ancien mot de passe (exemple bidon `MonMotDePasse#87654`) figurait dans l historique Git et etait reutilise pour le role PostgreSQL.
 - **Cause** : mot de passe ecrit en clair dans `docs/ia-interactions.md` initial, puis reutilise tel quel pour le role DB.
 - **Solution** : rotation via `ALTER ROLE vettime WITH PASSWORD '...'` ; redaction/suppression des occurrences dans les docs ; `.env` gitignore (jamais trace dans le depot).
 - **Lecon** : jamais de secret en clair dans le depot ; si un secret fuit, le renouveler immediatement ; isoler les secrets dans `.env` gitignore.

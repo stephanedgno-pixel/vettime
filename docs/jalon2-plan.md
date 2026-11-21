@@ -12,10 +12,10 @@
 
 ## Retours du Jalon 1 à intégrer (dès maintenant)
 - ⏱️ **Commits réguliers** au fil de l'eau (pas en 3 soirées)
-- 🔒 **Loi 25** dès la conception du modèle de données (consentement, minimisation)
-- 📜 **Transcriptions de session** publiées (gist) liées au blogue
-- 🧪 **Étendre les tests** (le prof voulait + qu'un seul test)
-- 🌐 Blogue **rendu + hébergé** (GitHub Pages) ; remise en PDF rendu
+- ✅ **Loi 25** dès la conception du modèle de données (consentement, minimisation)
+- ✅ **Transcriptions de session** publiées (gist) liées au blogue
+- ✅ **Étendre les tests** (le prof voulait + qu'un seul test)
+- ✅ Blogue **rendu + hébergé** (GitHub Pages) ; remise en PDF rendu
 
 ## Étapes cibles
 
@@ -49,7 +49,7 @@
 - Publier 1-2 transcriptions de session (gist) et les lier.
 - Livrable : blogue 2 + transcriptions.
 
-### ⬜ Étape 6 — Board + remise
+### ✅ Étape 6 — Board + remise
 - Mise à jour Projects board (tâches J2).
 - `docs/remise-jalon2.md` (PDF rendu) → ENA.
 - Commits réguliers tout au long, puis push + remise.
