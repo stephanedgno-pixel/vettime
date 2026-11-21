@@ -45,3 +45,8 @@
 ## Trace de l'usage de l'IA
 
 Conformément au cadre du cours, l'IA a servi d'outil d'aide (génération de code ORM, explications, diagnostic), et l'étudiant a gardé le contrôle : vérification par tests, diagnostic d'échecs, et compréhension des leçons (ex. encodage `#`/`%23`). Les mots de passe et secrets ne figurent jamais dans le dépôt (`.env` gitignoré, rôles tournés).
+
+## Problematique
+
+L'enonce formel du probleme adresse par VetTime (contexte, douleur client, solution)
+est documente dans [docs/problematique.md](docs/problematique.md).
