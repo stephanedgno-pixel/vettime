@@ -9,10 +9,9 @@
 - **Blogue technique 1** : `docs/blogue-technique-1.md`
 - **Blogue technique 2** : `docs/blogue-technique-2.md`
 - **Schéma de données commenté** : `docs/schema-v1.sql`
-- **ADR-001 / 002 / 003** : `docs/adr/`
+- **ADR-001 / 002 / 003 / 004** : `docs/adr/`
 - **Transcriptions de sessions IA (T1–T4)** : `docs/transcriptions-ia.md`
 - **Synthèse des interactions IA** : `docs/ia-interactions.md`
-- **Journal des problématiques** : `docs/problemes.md`
 - **Plan Jalon 2** : `docs/jalon2-plan.md`
 - **Problématique** : `docs/problematique.md`
 
@@ -21,7 +20,8 @@
 ### 1. ADRs (`docs/adr/`)
 - **ADR-001** — Framework web : FastAPI + Jinja2 + HTMX (rejet de React SPA pour éviter la complexité frontend inutile).
 - **ADR-002** — Base de données : PostgreSQL (rejet de SQLite/Mongo ; intégrité référentielle, rôles, contraintes).
-- **ADR-003** — Organisation du code / couches (routeurs, modèles ORM, base de données, tests).
+- **ADR-003** — Banques de congés/maladie (suivi des soldes, report ~1er mai, cash-out ~1er janvier).
+- **ADR-004** — Authentification : sessions `httpOnly` + bcrypt + CSRF (rejet JWT Bearer), aligné avec le README.
 
 ### 2. Schéma de données commenté (`docs/schema-v1.sql`)
 - **11 tables** mappées en ORM SQLAlchemy 2.0 (`app/models.py`), vérifiées par un test automatisé (`test_onze_tables`).

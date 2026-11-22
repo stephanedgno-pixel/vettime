@@ -1,9 +1,5 @@
 # Blogue technique 2 — Jalon 2 : Architecture et données
 
-> **À rédiger à TA voix.** Le prof veut ton récit réflexif. Utilise les points-clés ci-dessous comme matière première,
-> mais écris les phrases toi-même, à la première personne. Structure imposée
-> par le cours : les 3 questions ci-dessous.
-
 ---
 
 ## 1. Quelle décision architecturale importante avez-vous prise, quel était son contexte, et quelles alternatives avez-vous rejetées et pourquoi ?

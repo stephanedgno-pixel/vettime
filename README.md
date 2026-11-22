@@ -214,8 +214,8 @@ itération ultérieure si le temps le permet :
 - `docs/blogue-technique-1.md` et `docs/blogue-technique-2.md` : blogues techniques (récit du projet, décisions, réconciliation de l'authentification).
 - `docs/transcriptions-ia.md` : transcriptions brutes des sessions de travail avec l'IA (setup PostgreSQL sur le ThinkCentre, affinement du schéma avec la cliente, débogage de la connexion FastAPI ↔ PostgreSQL).
 - `docs/ia-interactions.md` : synthèse des interactions IA, décisions et leçons — notamment le **piège d'encodage `#`** : en clair côté SQL (`ALTER ROLE ... PASSWORD '...#...'`), encodé `%23` côté URL / `.env`.
-- `docs/point-ancrage.md` : point d'ancrage / démarrage sur le ThinkCentre (`cd ~/vettime`).
 - ADRs : décisions architecturales documentées (voir `docs/`).
+- ADR-004 : authentification (sessions `httpOnly` + bcrypt + CSRF) — `docs/adr/adr-004.md`.
 
 > Note de renommage : le dépôt et l'infrastructure portaient initialement le nom `audit` (héritage du projet de scanner de sécurité abandonné) ; ils ont été renommés `vettime` (pyproject, docker-compose, dossier, documentation).
 
