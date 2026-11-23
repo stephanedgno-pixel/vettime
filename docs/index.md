@@ -18,7 +18,6 @@ horaires et congés pour cliniques vétérinaires (projet fil rouge INF1410 — 
 ## Documentation
 
 - [Schéma de données commenté (v1.1)](schema-v1.sql)
-- [Journal des problématiques](problemes.html)
 - [Plan Jalon 2](jalon2-plan.html)
 - [Questions validées avec la cliente](questions-blanche.html)
 - [ADR-001 — Framework web](adr/adr-001.html)

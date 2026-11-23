@@ -30,7 +30,7 @@
 
 ### 3. Blogue technique 2 (`docs/blogue-technique-2.md`)
 - Décision architecturale + contexte + alternatives rejetées.
-- **Obstacle concret résolu** : encodage du mot de passe de base de données (`#` en clair côté SQL vs `%23` encodé côté URL/`.env`) — documenté dans `ia-interactions.md` (#5) et `problemes.md`.
+- **Obstacle concret résolu** : encodage du mot de passe de base de données (`#` en clair côté SQL vs `%23` encodé côté URL/`.env`) — documenté dans `ia-interactions.md` (#5).
 - Ce que le schéma révèle du domaine vétérinaire (paie, congés, banques, verrouillage).
 
 ### 4. Évolution du board (GitHub Issues)
