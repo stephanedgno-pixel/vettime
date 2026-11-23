@@ -111,7 +111,7 @@ de congé.
 - Mots de passe hachés avec bcrypt (jamais en clair)
 - Sessions en cookie `httpOnly` + `Secure` + `SameSite`
 - Tokens CSRF sur tous les formulaires HTMX (POST)
-- JWT signé optionnel si API en bonus (sinon sessions suffisent pour du server-rendered)
+- JWT Bearer rejeté (voir ADR-004) — les sessions httpOnly suffisent pour du server-rendered
 
 ## Assurance qualité
 

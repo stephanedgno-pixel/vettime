@@ -20,9 +20,12 @@ horaires et congés pour cliniques vétérinaires (projet fil rouge INF1410 — 
 - [Schéma de données commenté (v1.1)](schema-v1.sql)
 - [Plan Jalon 2](jalon2-plan.html)
 - [Questions validées avec la cliente](questions-blanche.html)
+- [Problématique](problematique.html)
 - [ADR-001 — Framework web](adr/adr-001.html)
 - [ADR-002 — Base de données](adr/adr-002.html)
-- [ADR-003 — Organisation du code](adr/adr-003.html)
+- [ADR-003 — Banques de congés/maladie](adr/adr-003.html)
+- [ADR-004 — Authentification (sessions httpOnly + bcrypt + CSRF)](adr/adr-004.html)
+- [ADR-005 — Organisation du code](adr/adr-005.html)
 
 ## Déploiement
 
