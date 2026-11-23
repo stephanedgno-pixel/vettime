@@ -10,6 +10,7 @@ dependencies = [
     "sqlalchemy>=2.1.8",
     "python-dotenv>=1.2.4",
     "passlib[bcrypt]>=1.7.4",
+    "bcrypt==4.0.1",
 ]
 
 [project.optional-dependencies]
@@ -20,6 +21,7 @@ package = false
 
 [dependency-groups]
 dev = [
+    "pytest>=9.1.1",
     "ruff>=0.17.5",
 ]
 
