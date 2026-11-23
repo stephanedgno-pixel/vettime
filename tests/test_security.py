@@ -1,5 +1,6 @@
 from app.security import hash_password, verify_password
 
+
 def test_hash_is_not_plaintext():
     assert hash_password("secret123") != "secret123"
 
