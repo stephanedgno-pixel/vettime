@@ -216,6 +216,7 @@ itération ultérieure si le temps le permet :
 - `docs/ia-interactions.md` : synthèse des interactions IA, décisions et leçons — notamment le **piège d'encodage `#`** : en clair côté SQL (`ALTER ROLE ... PASSWORD '...#...'`), encodé `%23` côté URL / `.env`.
 - ADRs : décisions architecturales documentées (voir `docs/`).
 - ADR-004 : authentification (sessions `httpOnly` + bcrypt + CSRF) — `docs/adr/adr-004.md`.
+- ADR-005 : organisation du code (couches, modèles ORM, tests) — `docs/adr/adr-005.md`.
 
 > Note de renommage : le dépôt et l'infrastructure portaient initialement le nom `audit` (héritage du projet de scanner de sécurité abandonné) ; ils ont été renommés `vettime` (pyproject, docker-compose, dossier, documentation).
 
