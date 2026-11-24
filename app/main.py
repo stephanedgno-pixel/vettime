@@ -26,4 +26,4 @@ def health_db(db: Session = Depends(get_db)):
 
 @app.get("/login")
 def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(request, "login.html")
