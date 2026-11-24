@@ -1,4 +1,5 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
@@ -6,6 +7,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 
 app = FastAPI(title="VetTime")
+
+templates = Jinja2Templates(directory="templates")
 
 @app.get("/health")
 def health():
@@ -20,3 +23,7 @@ def health_db(db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=503, detail=f"database unreachable: {e}")
     return {"status": "ok", "database": "connected"}
+
+@app.get("/login")
+def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
