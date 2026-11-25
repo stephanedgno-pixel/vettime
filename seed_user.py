@@ -1,8 +1,8 @@
-import os
 
 from dotenv import load_dotenv
+
 from app.database import SessionLocal
-from app.models import Utilisateur, Role
+from app.models import Role, Utilisateur
 from app.security import hash_password
 
 # Charge .env (DATABASE_URL + SECRET_KEY)
