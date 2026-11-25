@@ -8,6 +8,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
+from starlette.status import HTTP_303_SEE_OTHER
 
 from app.database import get_db
 from app.models import Utilisateur
@@ -16,6 +17,12 @@ from app.security import verify_password
 load_dotenv() 
 
 app = FastAPI(title="VetTime")
+
+def get_current_user(request: Request):
+    user_id = request.session.get("user_id")
+    if user_id is None:
+        raise HTTPException(status_code=HTTP_303_SEE_OTHER, headers={"Location": "/login"})
+    return user_id
 
 templates = Jinja2Templates(directory="templates")
 
@@ -48,5 +55,5 @@ def login(request: Request, email: str = Form(...), password: str = Form(...), d
     return templates.TemplateResponse(request, "login.html", {"error": "Identifiants invalides"})
 
 @app.get("/")
-def home(request: Request):
+def home(request: Request, user_id: int = Depends(get_current_user)):
     return templates.TemplateResponse(request, "home.html")

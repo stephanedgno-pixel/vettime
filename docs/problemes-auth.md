@@ -97,7 +97,14 @@ gestionnaire, GitHub Actions pour la CI.
 - **Symptôme** : `POST /login` (ou tout query ORM sur `Utilisateur`) → `InvalidRequestError: Mapper 'Mapper[Employe(employes)]' has no property 'employe'`.
 - **Cause** : `Utilisateur.employe` avait `back_populates="employe"`, mais l'attribut inverse côté `Employe` s'appelle `utilisateur` → désalignement de la relation.
 - **Solution** : changer `Utilisateur.employe` → `back_populates="utilisateur"` (aligné avec `Employe.utilisateur`).
-- **Leçon** : `back_populates` doit nommer **exactement** l'attribut inverse ; un désalignement casse la configuration du mapper (et donc tout query ORM). Ce bug latent n'était pas visible au démarrage de l'app (aucun query ORM au boot) — **c'est le test réel du login (option A) qui l'a révélé**. Valider le flux de bout en bout avant d'enchaîner évite de déboguer sur une base already cassée.
+- **Leçon** : `back_populates` doit nommer **exactement** l'attribut inverse ; un désalignement casse la configuration du mapper (et donc tout query ORM). Ce bug latent n'était pas visible au démarrage de l'app (aucun query ORM au boot) — **c'est le test réel du login (option A) qui l'a révélé**.
+
+### 15. Dépendance qui renvoie RedirectResponse ne court-circuite pas (Pièce 5)
+- **Symptôme** : `GET /` sans session → **200** (page d'accueil rendue) au lieu de **303 → /login**. La protection ne s'active pas.
+- **Cause** : en FastAPI 0.159 / Starlette 1.9, retourner un objet `Response` (ex. `RedirectResponse`) depuis une **dépendance** n'interrompt PAS le traitement. La valeur est passée au paramètre de la route (`user_id`), qui rend alors la page → 200.
+- **Solution** : dans `get_current_user`, **lever une exception** au lieu de retourner un Response :
+  `raise HTTPException(status_code=303, headers={"Location": "/login"})`. FastAPI court-circuite toujours sur une exception → la redirection est envoyée.
+- **Leçon** : pour protéger une route et rediriger si non authentifié, la dépendance doit **lever** (`HTTPException` 3xx + `Location`), pas retourner un `Response`. Vérifier le comportement réel (test live) : un simple `ruff` vert ne prouve pas que la redirection fonctionne.
 
 ## Synthèse des leçons (pour l'oral)
 
@@ -106,4 +113,5 @@ gestionnaire, GitHub Actions pour la CI.
 3. **Ordre de code** : `app` doit exister avant `app.add_middleware` ; pas de doublon mal placé.
 4. **Outils** : `cd ~/vettime` avant `uv run` ; `ruff --fix` avant `git push` ; tuer uvicorn par port, pas par `pkill -f`.
 5. **Modèles SQLAlchemy** : `back_populates` doit correspondre au nom exact de l'attribut inverse ; vérifier la cohérence des relations.
-6. **Tester le bout en bout avant de construire par-dessus** : seeder un user de test et valider `POST /login` (303 + cookie) a révélé un bug de modèle latent — faire l'option (A) avant la Pièce 5.
+6. **Tester le bout en bout avant de construire par-dessus** : seeder un user de test et valider `POST /login` (303 + cookie) a révélé un bug de modèle latent.
+7. **Dépendances de protection** : lever une exception (`HTTPException` 3xx + `Location`) pour rediriger, jamais retourner un `Response` (ne court-circuite pas en FastAPI 0.159).
