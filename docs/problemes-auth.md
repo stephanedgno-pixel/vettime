@@ -93,10 +93,17 @@ gestionnaire, GitHub Actions pour la CI.
 - **Solution** : utiliser une autre variable (`parent=$(ps -o ppid= -p "$p")`).
 - **Leçon** : ne pas réutiliser les noms de variables spéciales du shell (PPID, UID, etc.).
 
+### 14. Mapper SQLAlchemy plante — back_populates désaligné (Pièce 4, test login)
+- **Symptôme** : `POST /login` (ou tout query ORM sur `Utilisateur`) → `InvalidRequestError: Mapper 'Mapper[Employe(employes)]' has no property 'employe'`.
+- **Cause** : `Utilisateur.employe` avait `back_populates="employe"`, mais l'attribut inverse côté `Employe` s'appelle `utilisateur` → désalignement de la relation.
+- **Solution** : changer `Utilisateur.employe` → `back_populates="utilisateur"` (aligné avec `Employe.utilisateur`).
+- **Leçon** : `back_populates` doit nommer **exactement** l'attribut inverse ; un désalignement casse la configuration du mapper (et donc tout query ORM). Ce bug latent n'était pas visible au démarrage de l'app (aucun query ORM au boot) — **c'est le test réel du login (option A) qui l'a révélé**. Valider le flux de bout en bout avant d'enchaîner évite de déboguer sur une base already cassée.
+
 ## Synthèse des leçons (pour l'oral)
 
 1. **Venv** : recréer proprement après renommage machine ; vérifier les dépendances transitives (`uv add itsdangerous`).
 2. **Signatures d'API** : Starlette `TemplateResponse(request, "nom")` en 1er argument ; GET et POST doivent être des routes distinctes.
 3. **Ordre de code** : `app` doit exister avant `app.add_middleware` ; pas de doublon mal placé.
 4. **Outils** : `cd ~/vettime` avant `uv run` ; `ruff --fix` avant `git push` ; tuer uvicorn par port, pas par `pkill -f`.
-5. **CI** : un job lint rouge = presque toujours I001 (isort) ; `--fix` règle automatiquement.
+5. **Modèles SQLAlchemy** : `back_populates` doit correspondre au nom exact de l'attribut inverse ; vérifier la cohérence des relations.
+6. **Tester le bout en bout avant de construire par-dessus** : seeder un user de test et valider `POST /login` (303 + cookie) a révélé un bug de modèle latent — faire l'option (A) avant la Pièce 5.
