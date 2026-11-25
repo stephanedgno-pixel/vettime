@@ -1,4 +1,5 @@
 import os
+import secrets
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Form, HTTPException, Request
@@ -44,10 +45,14 @@ def health_db(db: Session = Depends(get_db)):
 
 @app.get("/login")
 def login_page(request: Request):
+    if "csrf_token" not in request.session:
+        request.session["csrf_token"] = secrets.token_hex(32)
     return templates.TemplateResponse(request, "login.html")
 
 @app.post("/login")
-def login(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+def login(request: Request, email: str = Form(...), password: str = Form(...), csrf_token: str = Form(...), db: Session = Depends(get_db)):
+    if not request.session.get("csrf_token") or csrf_token != request.session.get("csrf_token"):
+        raise HTTPException(status_code=403, detail="Jeton CSRF invalide")
     user = db.query(Utilisateur).filter(Utilisateur.email == email).first()
     if user and user.actif and verify_password(password, user.mot_de_passe_hash):
         request.session["user_id"] = user.id_utilisateur
@@ -57,3 +62,10 @@ def login(request: Request, email: str = Form(...), password: str = Form(...), d
 @app.get("/")
 def home(request: Request, user_id: int = Depends(get_current_user)):
     return templates.TemplateResponse(request, "home.html")
+
+@app.post("/logout")
+def logout(request: Request, csrf_token: str = Form(...)):
+    if not request.session.get("csrf_token") or csrf_token != request.session.get("csrf_token"):
+        raise HTTPException(status_code=403, detail="Jeton CSRF invalide")
+    request.session.clear()
+    return RedirectResponse(url="/login", status_code=303)

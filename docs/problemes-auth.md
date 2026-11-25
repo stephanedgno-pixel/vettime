@@ -106,12 +106,28 @@ gestionnaire, GitHub Actions pour la CI.
   `raise HTTPException(status_code=303, headers={"Location": "/login"})`. FastAPI court-circuite toujours sur une exception → la redirection est envoyée.
 - **Leçon** : pour protéger une route et rediriger si non authentifié, la dépendance doit **lever** (`HTTPException` 3xx + `Location`), pas retourner un `Response`. Vérifier le comportement réel (test live) : un simple `ruff` vert ne prouve pas que la redirection fonctionne.
 
+
+
+### 16. Starlette n'applique pas de CSRF automatiquement (Pièce 6)
+- **Symptôme** : on s'attendait à une protection CSRF « gratuite » via SessionMiddleware.
+- **Cause** : `grep csrf` dans `starlette/middleware/sessions.py` → aucune référence ; le middleware signe le cookie mais ne valide aucun jeton sur les méthodes non sûres.
+- **Solution** : implémenter un **double-submit token** manuel — générer `request.session["csrf_token"]` (secrets.token_hex), injecter `<input type="hidden" name="csrf_token">` dans les formulaires POST, et vérifier `csrf_token == request.session["csrf_token"]` dans les routes (sinon 403).
+- **Leçon** : jamais supposer qu'un middleware fait la sécurité pour nous ; vérifier le code source. CSRF = jeton de session + champ de formulaire + comparaison côté serveur.
+
+### 17. Cookie `secure` (https_only) casse le test de session en HTTP local (Pièce 6)
+- **Symptôme** : tous les POST (login/logout) retournaient 403 en test local (http://localhost, http://testserver).
+- **Cause** : `SessionMiddleware(https_only=True)` pose l'attribut `Secure` sur le cookie ; les clients (curl, httpx, navigateur) refusent d'envoyer un cookie `Secure` sur une connexion non chiffrée → la session ne fait pas le aller-retour → `csrf_token` absent → 403.
+- **Solution (test)** : tester la logique via une copie temporaire de `main.py` avec `https_only=False` (round-trip HTTP OK) ; en production, tester via l'URL tunnel **HTTPS**. Ne PAS désactiver `https_only` en prod (ADR-004).
+- **Leçon** : un cookie `Secure` protège en prod mais empêche le test local en HTTP ; toujours valider via HTTPS (tunnel) ou un environnement de test dédié.
+
 ## Synthèse des leçons (pour l'oral)
 
-1. **Venv** : recréer proprement après renommage machine ; vérifier les dépendances transitives (`uv add itsdangerous`).
-2. **Signatures d'API** : Starlette `TemplateResponse(request, "nom")` en 1er argument ; GET et POST doivent être des routes distinctes.
-3. **Ordre de code** : `app` doit exister avant `app.add_middleware` ; pas de doublon mal placé.
+1. **Venv** : recréer proprement après renommage machine ; vérifier les dépendances transitives.
+2. **Signatures d'API** : Starlette `TemplateResponse(request, "nom")` en 1er argument ; GET/POST séparés.
+3. **Ordre de code** : `app` doit exister avant `app.add_middleware`.
 4. **Outils** : `cd ~/vettime` avant `uv run` ; `ruff --fix` avant `git push` ; tuer uvicorn par port, pas par `pkill -f`.
-5. **Modèles SQLAlchemy** : `back_populates` doit correspondre au nom exact de l'attribut inverse ; vérifier la cohérence des relations.
-6. **Tester le bout en bout avant de construire par-dessus** : seeder un user de test et valider `POST /login` (303 + cookie) a révélé un bug de modèle latent.
-7. **Dépendances de protection** : lever une exception (`HTTPException` 3xx + `Location`) pour rediriger, jamais retourner un `Response` (ne court-circuite pas en FastAPI 0.159).
+5. **CI** : un job lint rouge = presque toujours I001 (isort) ; `--fix` règle.
+6. **Modèle** : une relation `back_populates` doit nommer EXACTEMENT l'attribut inverse ; tester un query ORM révèle les bugs latents.
+7. **FastAPI 0.159** : une dépendance qui **retourne** un `Response` ne court-circuite pas ; pour rediriger, **lever** `HTTPException(3xx, Location=...)`.
+8. **CSRF** : Starlette ne le fait pas pour nous ; implémenter double-submit token (session + champ + comparaison serveur).
+9. **Cookie Secure** : empêche le test HTTP local ; tester via HTTPS (tunnel) ou copie `https_only=False`.
