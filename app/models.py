@@ -41,7 +41,7 @@ class Utilisateur(Base):
     cree_le: Mapped[DateTime] = mapped_column(DateTime, default=func.now())
     modifie_le: Mapped[DateTime | None] = mapped_column(DateTime)
     role: Mapped["Role"] = relationship(back_populates="utilisateurs")
-    employe: Mapped["Employe | None"] = relationship(back_populates="employe")
+    employe: Mapped["Employe | None"] = relationship(back_populates="utilisateur")
 
 # ---------- Référence ----------
 class StatutJournee(Base):

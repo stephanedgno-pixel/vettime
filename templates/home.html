@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Accueil VetTime</h1>
+<p>Connecté (user_id={{ request.session.get("user_id") }}).</p>
+<form method="post" action="/logout">
+  <input type="hidden" name="csrf_token" value="{{ request.session.get('csrf_token') }}">
+  <button type="submit">Se déconnecter</button>
+</form>
+{% endblock %}

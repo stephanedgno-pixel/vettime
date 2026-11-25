@@ -140,5 +140,16 @@ Résultat : `engine.connect().execute(text('SELECT 1')).scalar()` → `1`. Le po
 - **Aidé** : lecture de tracebacks, diagnostic de conflits de versions, proposition de corrections ciblées (changement de pilote DB, encodage d'URL, restauration de dépendances). Accès direct au ThinkCentre via la clé SSH `ct_key` : vérification des fichiers en place et déboguage à distance.
 - **À noter** : l'IA applique les corrections, mais l'étudiant doit **valider et comprendre le « pourquoi »** (ex. pourquoi `postgresql+psycopg2://` et non `postgresql://`) — c'est ce qui sera interrogé à l'entretien.
 
+---
+## Jalon 3 — exemples représentatifs
+
+### 1. Environnement cassé : shebang périmé + incompatibilité passlib/bcrypt (diagnostic, puis reprise du contrôle)
+- **Situation** : au démarrage du Jalon 3 (branche `feat/auth`), `uv run pytest` échouait avec `Failed to spawn: pytest / No such file or directory`. L'étudiant a tenté plusieurs correctifs de son côté (`uv add --dev pytest`, `uv run --extra dev pytest`, `uv pip install pytest`) sans succès.
+- **Rôle de l'IA (contrôle confié)** : l'étudiant ne connaissait pas ce type de problème d'environnement et a remis le contrôle à l'IA pour diagnostic. L'IA a identifié **deux** causes distinctes :
+  1. **Shebang périmé** : les exécutables du venv pointaient vers l'ancien chemin `/home/Silverwaffen/audit/.venv` (avant renommage de la machine), donc `uv run` ne pouvait rien lancer. Correctif : recréation propre du venv (`rm -rf .venv && uv venv && uv sync`).
+  2. **Incompatibilité passlib 1.7.4 + bcrypt 5.0.0** : passlib (non maintenu) plante au chargement de son backend bcrypt → les tests de hachage échouaient en `ValueError`. Correctif : épingler `bcrypt==4.0.1` (compatible passlib).
+- **Reprise par l'étudiant** : une fois l'environnement réparé et les tests verts (`uv run pytest` → 7 passed, `uv run uvicorn` OK), l'étudiant a repris le contrôle et continué le codage de l'authentification.
+- **Leçon retenue** : (a) un venv déplacé/renommé casse les shebangs — recréer le venv plutôt que de bricoler ; (b) une dépendance non maintenue (passlib) casse avec des versions récentes (bcrypt 5.x) — épingler ou passer à bcrypt directement ; (c) distinguer « l'outil ne trouve pas le binaire » (shebang/env) de « le binaire tourne mais le code plante » (incompat de lib) — deux problèmes différents.
+
 > Transcriptions brutes (sessions réelles) : voir [transcriptions-ia.md](./transcriptions-ia.md).
 
