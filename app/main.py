@@ -27,7 +27,7 @@ def get_current_user(request: Request):
 
 templates = Jinja2Templates(directory="templates")
 
-app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"), https_only=True)
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"), https_only=os.getenv("VETTIME_HTTPS_ONLY", "true").lower() != "false")
 
 @app.get("/health")
 def health():
