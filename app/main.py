@@ -1,14 +1,22 @@
+import os
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.templating import Jinja2Templates
+from dotenv import load_dotenv
+from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 
+
+load_dotenv() 
+
 app = FastAPI(title="VetTime")
 
 templates = Jinja2Templates(directory="templates")
+
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY"), https_only=True)
 
 @app.get("/health")
 def health():
