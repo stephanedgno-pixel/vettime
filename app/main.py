@@ -1,7 +1,8 @@
 import os
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, Form, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -9,6 +10,8 @@ from sqlalchemy.orm import Session
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.database import get_db
+from app.models import Utilisateur
+from app.security import verify_password
 
 load_dotenv() 
 
@@ -35,3 +38,15 @@ def health_db(db: Session = Depends(get_db)):
 @app.get("/login")
 def login_page(request: Request):
     return templates.TemplateResponse(request, "login.html")
+
+@app.post("/login")
+def login(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+    user = db.query(Utilisateur).filter(Utilisateur.email == email).first()
+    if user and user.actif and verify_password(password, user.mot_de_passe_hash):
+        request.session["user_id"] = user.id_utilisateur
+        return RedirectResponse(url="/", status_code=303)
+    return templates.TemplateResponse(request, "login.html", {"error": "Identifiants invalides"})
+
+@app.get("/")
+def home(request: Request):
+    return templates.TemplateResponse(request, "home.html")
