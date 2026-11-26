@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mon horaire</h1>
+<table border="1" cellpadding="6">
+  <thead>
+    <tr><th>Jour</th><th>Poincons</th><th>Heures du jour</th></tr>
+  </thead>
+  <tbody>
+  {% for j in jours %}
+    <tr>
+      <td>{{ j.jour }}</td>
+      <td>
+        {% for p in j.poincons %}
+          {{ p.type_poincon }} ({{ p.horodatage }})<br>
+        {% endfor %}
+      </td>
+      <td>{{ j.total }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><strong>Total cumule : {{ total }}</strong></p>
+<p><a href="/">Retour a l'accueil</a></p>
+{% endblock %}
