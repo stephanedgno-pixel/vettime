@@ -12,7 +12,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.status import HTTP_303_SEE_OTHER
 
 from app.database import get_db
-from app.models import Utilisateur, Poincon
+from app.models import Poincon, Utilisateur
 from app.security import verify_password
 
 load_dotenv() 
@@ -71,6 +71,16 @@ def pointe(request: Request, user_id: int = Depends(get_current_user), db: Sessi
     db.add(Poincon(id_utilisateur=user_id, type_poincon=type_p))
     db.commit()
     return RedirectResponse(url="/", status_code=303)
+
+@app.get("/poincons")
+def poincons(request: Request, user_id: int = Depends(get_current_user), db: Session = Depends(get_db)):
+    liste = (
+        db.query(Poincon)
+        .filter(Poincon.id_utilisateur == user_id)
+        .order_by(Poincon.horodatage.desc())
+        .all()
+    )
+    return templates.TemplateResponse(request, "poincons.html", {"poincons": liste})
 
 @app.get("/")
 def home(request: Request, user_id: int = Depends(get_current_user)):
