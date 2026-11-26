@@ -20,8 +20,14 @@
   filmée ; le comportement est vérifié par test (voir `docs/problemes-auth.md`,
   problèmes #16 et #17).
 
+## 3. Création d'une branche (feat/punche) — workflow git
+- **URL** : https://youtu.be/JaBmroSeVXQ
+- **Publié** : 2026-11-25
+- **Contenu** : création de la branche `feat/punche` à partir de `main` (git checkout -b feat/punche), poussée sur origin. Démontre le flux Jalon 3 (branche par fonctionnalité + PR).
+
 ## Récapitulatif
-| # | Pièce | Vidéo |
-|---|-------|-------|
+| # | Vidéo | Lien |
+|---|-------|------|
 | 1 | Templates + `/login` (Pièce 2) | JnJaYskMpZY |
 | 2 | logout + CSRF (Pièce 6) | 3m-Ge0sEsSE |
+| 3 | Création branche feat/punche (workflow) | JaBmroSeVXQ |
