@@ -12,8 +12,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.status import HTTP_303_SEE_OTHER
 
 from app.database import get_db
-from app.models import Poincon, Utilisateur
 from app.heures import calculer_total_heures, regrouper_par_jour
+from app.models import Poincon, Utilisateur
 from app.security import verify_password
 
 load_dotenv()
