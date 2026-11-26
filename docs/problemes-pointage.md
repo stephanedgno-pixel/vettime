@@ -29,3 +29,8 @@ Solution / Leçon.*
   = 1 ligne → **aucune donnée perdue**, historique = liste des lignes.
 - **Leçon** : vérifier le schéma EXISTANT avant d'ajouter une table —
   on a failli créer un doublon / écraser une table validée.
+
+## 3. Note de conception - table `poincons` = flexibilite
+- **Choix** : ajouter une table `poincons` (journal d'evenements) pour **ajouter de la flexibilite au programme** plutot que reutiliser `pointages` (4 creneaux figes/jour).
+- **Avantage** : chaque pression = **1 ligne** (`entree`/`sortie` + `horodatage` serveur). Aucune limite au nombre de pointages/jour (pause, rendez-vous, retours) -> **aucune perte de donnees**. On peut ensuite **deriver** n'importe quel resume (arrivee, departs, total d'heures) a partir du journal.
+- **Contraste** : `pointages` (schema v1.1) est fige a 4 champs/jour -> aurait provoque une perte de donnees si l'employe pointe plusieurs fois. C'est pourquoi on a choisi B.
