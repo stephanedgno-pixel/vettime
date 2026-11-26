@@ -6,6 +6,7 @@ from app.main import app
 def test_app_title():
     assert app.title == "VetTime"
 
+
 def test_health():
     client = TestClient(app)
     r = client.get("/health")
