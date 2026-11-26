@@ -149,3 +149,12 @@ class BanqueMaladie(Base):
     renouvellement: Mapped[Date | None] = mapped_column(Date)
     annee: Mapped[int | None] = mapped_column(Integer)
     employe: Mapped["Employe"] = relationship(back_populates="banque_maladie")
+
+
+# ---------- Poincons (journal d'evenements de pointage) ----------
+class Poincon(Base):
+    __tablename__ = "poincons"
+    id_poincon: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_utilisateur: Mapped[int] = mapped_column(ForeignKey("utilisateurs.id_utilisateur"), nullable=False)
+    type_poincon: Mapped[str] = mapped_column(String(10), nullable=False)  # "entree" | "sortie"
+    horodatage: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
