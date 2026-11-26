@@ -34,3 +34,13 @@ Solution / Leçon.*
 - **Choix** : ajouter une table `poincons` (journal d'evenements) pour **ajouter de la flexibilite au programme** plutot que reutiliser `pointages` (4 creneaux figes/jour).
 - **Avantage** : chaque pression = **1 ligne** (`entree`/`sortie` + `horodatage` serveur). Aucune limite au nombre de pointages/jour (pause, rendez-vous, retours) -> **aucune perte de donnees**. On peut ensuite **deriver** n'importe quel resume (arrivee, departs, total d'heures) a partir du journal.
 - **Contraste** : `pointages` (schema v1.1) est fige a 4 champs/jour -> aurait provoque une perte de donnees si l'employe pointe plusieurs fois. C'est pourquoi on a choisi B.
+
+
+## Statut (issue #2)
+- **Terminee** : 5 commits fonctionnels (`fb8fc20`, `7544f02`, `63dda3f`,
+  `37537ee`, `048bbf1`) + commit de format (`2d03115`).
+- **Mergee dans `main`** via PR #21 (commit `b569b06` sur main).
+- Criteres du user story respectes : bouton punch, horodatage serveur
+  (server_default), historique des poincons (GET /poincons).
+- Totalisateur (heures cumulees) volontairement REPORTE hors #2 — il appartient
+  a l'issue #3 (heures cumulees).
