@@ -13,6 +13,7 @@ from starlette.status import HTTP_303_SEE_OTHER
 
 from app.database import get_db
 from app.models import Poincon, Utilisateur
+from app.heures import calculer_total_heures, regrouper_par_jour
 from app.security import verify_password
 
 load_dotenv()
@@ -113,6 +114,25 @@ def poincons(
         .all()
     )
     return templates.TemplateResponse(request, "poincons.html", {"poincons": liste})
+
+
+@app.get("/horaire")
+def horaire(
+    request: Request,
+    user_id: int = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    poincons = (
+        db.query(Poincon)
+        .filter(Poincon.id_utilisateur == user_id)
+        .order_by(Poincon.horodatage.asc())
+        .all()
+    )
+    jours = regrouper_par_jour(poincons)
+    total = calculer_total_heures(poincons)
+    return templates.TemplateResponse(
+        request, "horaire.html", {"jours": jours, "total": total}
+    )
 
 
 @app.get("/")
