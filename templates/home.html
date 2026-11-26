@@ -6,4 +6,10 @@
   <input type="hidden" name="csrf_token" value="{{ request.session.get('csrf_token') }}">
   <button type="submit">Se déconnecter</button>
 </form>
+
+<form method="post" action="/pointe">
+  <button type="submit">Pointer (entrée/sortie)</button>
+</form>
+<p><a href="/poincons">Voir l'historique des poinçons</a></p>
+
 {% endblock %}

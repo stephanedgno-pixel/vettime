@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Historique des poinçons</h1>
+<table border="1" cellpadding="6">
+  <thead>
+    <tr><th>Type</th><th>Horodatage (serveur)</th></tr>
+  </thead>
+  <tbody>
+  {% for p in poincons %}
+    <tr>
+      <td>{{ p.type_poincon }}</td>
+      <td>{{ p.horodatage }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><a href="/">Retour a l'accueil</a></p>
+{% endblock %}

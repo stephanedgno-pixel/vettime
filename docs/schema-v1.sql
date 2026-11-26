@@ -170,3 +170,11 @@ CREATE TABLE banques_maladie (
 --   utilisateurs 1—N periodes_verrouillage.verrouillee_par / demandes_conge.approuve_par
 --   (jours_feries est indépendant : consulté par la logique de paie)
 -- ============================================================
+
+-- ---------- Poincons (journal d'evenements de pointage) ----------
+CREATE TABLE poincons (
+    id_poincon      SERIAL PRIMARY KEY,
+    id_utilisateur INT NOT NULL REFERENCES utilisateurs(id_utilisateur),
+    type_poincon    VARCHAR(10) NOT NULL,  -- "entree" | "sortie"
+    horodatage      TIMESTAMP NOT NULL DEFAULT NOW()  -- heure serveur
+);
