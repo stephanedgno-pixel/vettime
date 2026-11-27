@@ -1,5 +1,7 @@
 # Blogue technique — Entrée 1 : amorçage de VetTime
 
+*Date : 2026-11-02*
+
 ## Qui sont nos utilisateurs et quel problème résolvons-nous ?
 
 VetTime vise les petites cliniques vétérinaires. Deux profils concrets :

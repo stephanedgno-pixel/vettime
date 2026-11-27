@@ -78,7 +78,7 @@ de congé.
 - Soumission d'une demande
 - Approbation ou refus par un gestionnaire
 
-### Gestion multi-clinique
+### Gestion multi-clinique _(PROPOSÉ — hors périmètre MVP, absente du schéma v1)_
 - Plusieurs cliniques
 - Employés associés à une clinique
 
@@ -122,11 +122,11 @@ de congé.
 
 ## Déploiement
 
-Infrastructure déjà disponible :
+Infrastructure prévue (jalon M6, module 5) :
 - ThinkCentre dédié (Docker Compose)
 - Cloudflare Tunnel (URL publique, aucune installation pour les correcteurs)
 
-L'application sera accessible publiquement aux correcteurs sans aucune installation.
+L'application sera déployée (M6, module 5) puis accessible publiquement aux correcteurs.
 
 ## Architecture
 
@@ -222,7 +222,7 @@ itération ultérieure si le temps le permet :
 
 ## Modèle de données
 
-- **11 tables** SQLAlchemy 2.0 (ORM) couvrant utilisateurs, rôles, cliniques, présences, horaires, congés, etc.
+- **11 tables** SQLAlchemy 2.0 (ORM) couvrant utilisateurs, rôles, présences, horaires, congés, etc.
 - Schéma relationnel validé (clés étrangères, contraintes d'intégrité référentielle).
 - Connexion DB gracieuse : `/health/db` renvoie `503` (au lieu de crasher) si PostgreSQL est injoignable.
 

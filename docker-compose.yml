@@ -3,7 +3,7 @@ services:
     image: postgres:16
     environment:
       POSTGRES_USER: appuser
-      POSTGRES_PASSWORD: apppass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: vettimedb
     volumes:
       - dbdata:/var/lib/postgresql/data
