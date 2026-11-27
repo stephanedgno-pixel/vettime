@@ -1,5 +1,7 @@
 # Blogue technique 2 — Jalon 2 : Architecture et données
 
+*Date : 2026-11-05*
+
 ---
 
 ## 1. Quelle décision architecturale importante avez-vous prise, quel était son contexte, et quelles alternatives avez-vous rejetées et pourquoi ?
