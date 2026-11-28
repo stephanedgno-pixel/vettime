@@ -1,12 +1,15 @@
 import os
 
-os.environ["VETTIME_HTTPS_ONLY"] = "false"  # cookie de session non-Secure en test (HTTP)
+os.environ["VETTIME_HTTPS_ONLY"] = (
+    "false"  # cookie de session non-Secure en test (HTTP)
+)
 
 import re
 
+import pytest
 from fastapi.testclient import TestClient
 
-from app.database import SessionLocal
+from app.database import SessionLocal, engine
 from app.main import app
 from app.models import Poincon
 
@@ -15,6 +18,11 @@ PASSWORD = "MotDePasse123!"
 
 
 def test_csrf_pointe():
+    # Le projet ne fournit pas de DB en CI : ce test d'intégration DB est sauté
+    # hors environnement local (comme le reste de la suite, DB-indépendante).
+    if engine is None:
+        pytest.skip("DATABASE_URL absent : test CSRF sauté en CI (pas de DB)")
+
     c = TestClient(app, base_url="http://127.0.0.1:8000")
 
     # Authentification -> session + jeton CSRF
