@@ -10,6 +10,12 @@ from sqlalchemy.orm import Session
 
 from app.models import BanqueMaladie, BanqueVacances, DemandeConge, MouvementBanque
 
+# Estimation TEMPORAIRE du nombre d'heures par jour de congé (ADR-006).
+# Placeholder en attendant la vraie regle metier (jours ouvrés, heures de
+# contrat par employé), qui sera implémentée avec la future UI d'approbation.
+# Le test test_utilisation_liee_demande verrouille ce comportement (3 j -> -22.5h).
+_HEURES_JOUR_TEMP = 7.5
+
 
 def calculer_solde(db: Session, id_employe: int, type_banque: str) -> float:
     """Solde autoritatif = somme des montants (source de vérité)."""
@@ -98,8 +104,11 @@ def approuver_demande_conge(
     d.statut = "approuve"
     d.approuve_par = id_utilisateur
     d.approuve_le = func.now()
+    # TEMPORAIRE (ADR-006) : voir _HEURES_JOUR_TEMP. Le vrai calcul (jours
+    # ouvrés, heures de contrat par employé) appartient à la future UI
+    # d'approbation des congés.
     jours = (d.date_fin - d.date_debut).days + 1
-    heures = float(jours) * 7.5
+    heures = float(jours) * _HEURES_JOUR_TEMP
     ecrire_mouvement(
         db,
         d.id_employe,
