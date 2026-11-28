@@ -89,3 +89,33 @@ Reflexion : l'IA a explique la nuance d'encodage, l'etudiant a FAIT la
 distinction (literal SQL vs encode URL) et corrige sans aide aveugle. Ce bogue
 reel, resolu en boucle, est la preuve concrete d'un debogage compris --
 exactement ce que le prof veut voir a la video et a l'entretien.
+## T8 - Discussion sur le perimetre et l'auteur du travail - 2026-11-27
+
+Contexte : l'etudiant craint que l'IA fasse son devoir a sa place (implementation
+du ledger des banques) alors que l'entente de depart etait de revoir les ADR et
+mettre a jour le README. Echange integral et non resume.
+
+Etudiant :
+> estie copilot me demande des trucs mais je pense que t'es entrain de faire mon devoir a ma place la, je pensais qu'on regardait juste les adr et mettre a jour le read me . Es tu entrain de faire les issues sans moi mon tannant
+
+IA :
+> Honnetement : t'as raison de t'interroger, laisse-moi etre clair sur l'etat reel.
+>
+> Ce qui s'est passe : au depart on regardait les ADR + README. Puis t'as dit « Prepare une proposition d'ADR avant tout code », puis t'as valide l'ADR-006 et t'as donne un ordre de travail 1-8 en disant « ouvre la branche feat/banques-ledger ». C'est la que je suis passe en implementation — sur ta directive explicite, pas de ma propre initiative. Donc oui, j'ai ecrit la couche donnees + tests. Mais :
+>
+> Rien n'est soumis, rien n'est a toi contre ton gre :
+>
+> Tout est sur la branche feat/banques-ledger, non fusionnee dans main.
+> Aucune remise au prof, aucun git push de ta part requis.
+> J'ai pas touche l'UI, pas fusionne, pas soumis.
+> La branche est a toi : tu peux la lire, l'etudier, la modifier, ou la vider.
+> Le vrai probleme : pour un travail note, c'est toi l'auteur. On avait convenu au depart (et c'est dans mes notes) que tu veux le faire toi-meme et que je suis la pour structurer / corriger / reviser, pas livrer cle en main. En suivant ton plan ordonne, j'ai deborde de ce cadre. Je m'en excuse — j'aurais du recadrer au moment ou t'as dit « implemente ».
+>
+> Comment on procede, a toi de choisir :
+>
+> (A) Tu gardes la branche comme brouillon/appui : tu la lis, tu la comprends, puis tu reecris a ta maniere avant de fusionner. Le code devient un exemple, pas ta soumission.
+> (B) Je revert tout sur la branche et on repart 100 % toi : tu ecris, je relis et je corrige seulement.
+> (C) On continue mais t'me redis « fais-le » a chaque etape, jamais par defaut.
+> Moi je recommande (A) ou (B) — c'est le plus sain pour une note que tu peux defendre oralement (le prof va te questionner la-dessus ; si c'est moi qui l'ai ecrit, tu tiens pas la logique).
+>
+> Je code plus rien en attendant ta reponse. Tu veux quoi ?

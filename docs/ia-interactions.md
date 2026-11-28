@@ -31,3 +31,4 @@ L'IA produit ; moi j'évalue, je diagnostique et je corrige. Où elle a déçu
 (analyse visuelle imparfaite, tendance à inventer des détails) : je vérifie
 chaque affirmation et je conserve la trace des corrections (`docs/problemes.md`).
 Aux entretiens, je dois pouvoir expliquer *moi-même* chaque choix.
+- **T8** — Discussion sur le perimetre et l'auteur du travail : l'etudiant a repris le controle quand l'IA a deborde (implementation du ledger des banques sans validation etape par etape). Voir `docs/transcriptions-ia.md`.
