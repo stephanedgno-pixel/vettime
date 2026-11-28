@@ -60,7 +60,7 @@ de congé.
 ## Fonctionnalités MVP
 
 ### Authentification
-- Création de compte
+- Création de compte _(comptes créés via seed/admin ; pas d'auto-inscription en MVP)_
 - Connexion / Déconnexion
 - Gestion des rôles
 
@@ -74,7 +74,7 @@ de congé.
 - Historique des poinçons
 - Calcul automatique des heures travaillées
 
-### Gestion des congés
+### Gestion des congés _(schéma `demandes_conge` en place ; UI/routes prévues M4)_
 - Soumission d'une demande
 - Approbation ou refus par un gestionnaire
 
@@ -82,7 +82,7 @@ de congé.
 - Plusieurs cliniques
 - Employés associés à une clinique
 
-### Rapports
+### Rapports _(calcul du total cumulé ✅ ; rapports détaillés prévus M5)_
 - Heures travaillées
 - Présences
 - Retards
@@ -93,6 +93,8 @@ de congé.
 - **Employé** : pointer ses heures, voir son horaire, demander un congé
 - **Gestionnaire** : gérer les horaires, corriger les poinçons, approuver les congés, consulter les rapports
 - **Administrateur** : gérer les cliniques, gérer les utilisateurs, gérer les permissions
+
+> _Rôles modélisés dans le schéma (table `roles`) ; l'enforcement (RBAC) des permissions est prévu (M4+), pas encore actif dans les routes._
 
 ## Technologies retenues
 
@@ -105,7 +107,7 @@ de congé.
 | Tests | pytest + ruff (lint) |
 | Intégration continue | GitHub Actions (pytest + lint + build Docker) |
 | Conteneurisation | Docker Compose |
-| Observabilité | Prometheus + Grafana |
+| Observabilité | Prometheus + Grafana _(M6, module 5, à venir)_ |
 
 ### Authentification (détail)
 - Mots de passe hachés avec bcrypt (jamais en clair)
@@ -115,7 +117,7 @@ de congé.
 
 ## Assurance qualité
 
-- **Tests automatisés pytest dès le MVP** : auth, calcul d'heures, permissions par rôle
+- **Tests automatisés pytest dès le MVP** : auth ✅, calcul d'heures ✅, permissions par rôle (prévues)
 - **CI GitHub Actions** : pytest exécuté à chaque push — lint (ruff) + build Docker exécutés à chaque push
 - **Pas de mot de passe en clair** : bcrypt obligatoire
 - **Sessions httpOnly + CSRF** : protection contre le vol de session et le CSRF
@@ -124,7 +126,7 @@ de congé.
 
 Infrastructure prévue (jalon M6, module 5) :
 - ThinkCentre dédié (Docker Compose)
-- Cloudflare Tunnel (URL publique, aucune installation pour les correcteurs)
+- Cloudflare Tunnel _(prévu M6 : URL publique à venir)_
 
 L'application sera déployée (M6, module 5) puis accessible publiquement aux correcteurs.
 
