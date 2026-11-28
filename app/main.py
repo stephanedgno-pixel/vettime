@@ -86,9 +86,14 @@ def login(
 @app.post("/pointe")
 def pointe(
     request: Request,
+    csrf_token: str = Form(...),
     user_id: int = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    if not request.session.get("csrf_token") or csrf_token != request.session.get(
+        "csrf_token"
+    ):
+        raise HTTPException(status_code=403, detail="Jeton CSRF invalide")
     dernier = (
         db.query(Poincon)
         .filter(Poincon.id_utilisateur == user_id)

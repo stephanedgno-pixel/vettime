@@ -8,6 +8,7 @@
 </form>
 
 <form method="post" action="/pointe">
+  <input type="hidden" name="csrf_token" value="{{ request.session.get('csrf_token') }}">
   <button type="submit">Pointer (entrée/sortie)</button>
 </form>
 <p><a href="/poincons">Voir l'historique des poinçons</a>
