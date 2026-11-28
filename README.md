@@ -238,3 +238,15 @@ Conformément à la *Loi 25*, le modèle de données applique le principe de **m
 ## Videos
 
 - Enregistree le 2026-11-21 — Mettre en ligne des videos sur YouTube (acces correcteur) : https://youtu.be/lMnci8FpNdY
+
+## Limites connues et travaux a venir
+
+Ce projet est un livrable de cours (Jalon 3). Les points suivants ont ete identifies
+lors de la revue mais ne sont pas encore implementes :
+
+- **Historique et mouvements des banques de conges** : le modele actuel conserve
+  uniquement un solde (`solde_actuel` dans `banques_vacances` / `banques_maladie`),
+  sans journal des mouvements. Une conception type *ledger* a ete documentee (ADR-006)
+  mais n est pas encore mise en oeuvre. *A venir.*
+- **Report des ecarts entre horaire planifie et temps reel** : les ecarts ne sont
+  pas encore calcules ni reportes. *A venir.*
