@@ -207,3 +207,31 @@ class Poincon(Base):
     horodatage: Mapped[DateTime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False
     )
+
+
+class MouvementBanque(Base):
+    """Ledger des banques de congés (ADR-006).
+
+    Toute variation de solde (vacances/maladie) est un mouvement tracé.
+    Le solde courant = SUM(montant) ; solde_apres est un snapshot dénormalisé
+    (lecture O(1) + audit par ligne, cf. ADR-006)."""
+
+    __tablename__ = "mouvements_banque"
+    id_mouvement: Mapped[int] = mapped_column(Integer, primary_key=True)
+    id_employe: Mapped[int] = mapped_column(
+        ForeignKey("employes.id_employe"), nullable=False
+    )
+    type_banque: Mapped[str] = mapped_column(String(10), nullable=False)
+    type_mouvement: Mapped[str] = mapped_column(String(15), nullable=False)
+    montant: Mapped[float] = mapped_column(Numeric(6, 2), nullable=False)
+    solde_apres: Mapped[float] = mapped_column(Numeric(6, 2), nullable=False)
+    date_mouvement: Mapped[DateTime] = mapped_column(
+        DateTime, server_default=func.now(), nullable=False
+    )
+    id_demande: Mapped[int | None] = mapped_column(
+        ForeignKey("demandes_conge.id_demande")
+    )
+    cree_par: Mapped[int | None] = mapped_column(
+        ForeignKey("utilisateurs.id_utilisateur")
+    )
+    note: Mapped[str | None] = mapped_column(String(200))

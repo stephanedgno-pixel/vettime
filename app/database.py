@@ -13,7 +13,16 @@ SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
 # engine = le "pont" vers la base. Créé seulement si l'URL existe
 # (sinon l'import ne plante pas en CI / sans .env).
-engine = create_engine(SQLALCHEMY_DATABASE_URL) if SQLALCHEMY_DATABASE_URL else None
+# client_encoding=utf8 : les écritures de texte français (notes, motifs)
+# doivent être encodées en UTF-8, sinon psycopg2 tente l'ASCII et échoue.
+engine = (
+    create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        connect_args={"client_encoding": "utf8"},
+    )
+    if SQLALCHEMY_DATABASE_URL
+    else None
+)
 SessionLocal = (
     sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine else None
 )

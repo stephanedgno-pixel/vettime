@@ -178,3 +178,30 @@ CREATE TABLE poincons (
     type_poincon    VARCHAR(10) NOT NULL,  -- "entree" | "sortie"
     horodatage      TIMESTAMP NOT NULL DEFAULT NOW()  -- heure serveur
 );
+
+-- ---------------------------------------------------------------------------
+-- v1.2 — Ledger des banques (ADR-006)
+-- Répond à la critique : les banques ne gardaient ni historique ni mouvements.
+-- Toute variation de solde devient un mouvement tracé. solde_apres est un
+-- snapshot dénormalisé (lecture O(1) + audit par ligne).
+-- ---------------------------------------------------------------------------
+CREATE TABLE mouvements_banque (
+    id_mouvement     SERIAL PRIMARY KEY,
+    id_employe       INT NOT NULL REFERENCES employes(id_employe),
+    type_banque      VARCHAR(10) NOT NULL
+                     CHECK (type_banque IN ('vacances', 'maladie')),
+    type_mouvement   VARCHAR(15) NOT NULL
+                     CHECK (type_mouvement IN
+                         ('accumulation', 'utilisation', 'ajustement',
+                          'cash_out', 'renouvellement', 'initial')),
+    montant          DECIMAL(6,2) NOT NULL,
+    solde_apres      DECIMAL(6,2) NOT NULL,
+    date_mouvement   TIMESTAMP NOT NULL DEFAULT NOW(),
+    id_demande       INT REFERENCES demandes_conge(id_demande),
+    cree_par         INT REFERENCES utilisateurs(id_utilisateur),
+    note             VARCHAR(200),
+    UNIQUE (id_employe, type_banque, date_mouvement, type_mouvement)
+);
+
+CREATE INDEX idx_mouv_employe_banque
+    ON mouvements_banque (id_employe, type_banque, date_mouvement);
